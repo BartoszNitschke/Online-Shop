@@ -16,7 +16,7 @@ const Home = () => {
     };
 
     fetchProducts();
-  }, []);
+  }, [products]);
 
   return (
     <div>

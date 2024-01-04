@@ -29,7 +29,6 @@ const AddProduct = () => {
       },
     });
 
-    console.log(JSON.stringify(product));
     const json = await res.json();
 
     if (!res.ok) {
