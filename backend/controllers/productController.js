@@ -24,8 +24,15 @@ const getProduct = async (req, res) => {
 };
 
 const addProduct = async (req, res) => {
-  const { name, url, priceNoDelivery, priceDelivery, description, quantity } =
-    req.body;
+  const {
+    name,
+    url,
+    priceNoDelivery,
+    priceDelivery,
+    description,
+    bio,
+    quantity,
+  } = req.body;
 
   try {
     const product = await Product.create({
@@ -34,6 +41,7 @@ const addProduct = async (req, res) => {
       priceNoDelivery,
       priceDelivery,
       description,
+      bio,
       quantity,
     });
     res.status(200).json(product);

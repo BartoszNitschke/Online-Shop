@@ -24,6 +24,7 @@ const ProductDetails = ({ product }) => {
       <h4>Price: {product.priceNoDelivery}</h4>
       <h4>Price With Delivery: {product.priceDelivery}</h4>
       <h5>Description: {product.description}</h5>
+      <h5>Bio: {product.bio}</h5>
       <h4>Quantity: {product.quantity}</h4>
       <button onClick={handleDelete}> Delete</button>
     </div>

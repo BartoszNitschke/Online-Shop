@@ -6,6 +6,7 @@ const AddProduct = () => {
   const [priceNoDelivery, setPriceNoDelivery] = useState("");
   const [priceDelivery, setPriceDelivery] = useState("");
   const [description, setDescription] = useState("");
+  const [bio, setBio] = useState("");
   const [quantity, setQuantity] = useState("");
   const [error, setError] = useState(null);
 
@@ -18,6 +19,7 @@ const AddProduct = () => {
       priceNoDelivery,
       priceDelivery,
       description,
+      bio,
       quantity,
     };
 
@@ -42,6 +44,7 @@ const AddProduct = () => {
       setPriceNoDelivery("");
       setPriceDelivery("");
       setDescription("");
+      setBio("");
       setQuantity("");
       console.log("new product added", json);
     }
@@ -80,6 +83,9 @@ const AddProduct = () => {
         onChange={(e) => setDescription(e.target.value)}
         value={description}
       />
+
+      <label>Product bio (longer):</label>
+      <input type="text" onChange={(e) => setBio(e.target.value)} value={bio} />
 
       <label>Product quantity:</label>
       <input
