@@ -1,4 +1,4 @@
-import { createContext, useReducer, useEffect, useState } from "react";
+import { createContext, useReducer, useEffect } from "react";
 
 export const UserContext = createContext();
 
@@ -18,8 +18,6 @@ export const UserContextProvider = ({ children }) => {
     user: null,
   });
 
-  const [userDetails, setUserDetails] = useState();
-
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
 
@@ -32,7 +30,6 @@ export const UserContextProvider = ({ children }) => {
       }
 
       if (userDetailsRes.ok) {
-        setUserDetails(detailsJSON);
         dispatch({ type: "LOGIN", payload: detailsJSON });
       }
     };
@@ -40,7 +37,6 @@ export const UserContextProvider = ({ children }) => {
     if (user) {
       console.log("email usera: ", user.email);
       getDetails(user.email);
-      console.log(userDetails);
     }
   }, []);
 
