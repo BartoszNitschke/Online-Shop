@@ -25,7 +25,7 @@ const Navbar = () => {
       <div className="bg-orange-500 text-gray-200 text-center py-2 text-[16px] font-semibold  z-10 fixed w-full ">
         <h1>Free shipping on order over 40$. Easy returns!</h1>
       </div>
-      <div className=" w-[100%] mt-10 fixed z-10  h-[70px] bg-white flex justify-center">
+      <div className=" w-[100%] mt-10 fixed z-10  h-[70px] bg-white flex justify-center shadow-md shadow-gray-300">
         <div className="w-[95%] flex justify-between items-center">
           <div className="text-[18px] py-2">
             <Link className="px-2 font-semibold" to="/products">

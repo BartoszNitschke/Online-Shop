@@ -25,6 +25,7 @@ function App() {
               element={!user ? <Signup /> : <Navigate to="/" />}
             />
             <Route path="/adminpanel" element={<AdminPanel />} />
+            <Route path="/product/:id" />
           </Routes>
         </div>
       </BrowserRouter>

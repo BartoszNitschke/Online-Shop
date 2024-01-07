@@ -32,6 +32,30 @@ const productSchema = new Schema(
       type: Number,
       required: true,
     },
+    men: {
+      type: Boolean,
+      required: true,
+    },
+    women: {
+      type: Boolean,
+      required: true,
+    },
+    tshirt: {
+      type: Boolean,
+      required: true,
+    },
+    pants: {
+      type: Boolean,
+      required: true,
+    },
+    shoes: {
+      type: Boolean,
+      required: true,
+    },
+    socks: {
+      type: Boolean,
+      required: true,
+    },
   },
   { timestamps: true }
 );

@@ -8,6 +8,12 @@ const AddProduct = () => {
   const [description, setDescription] = useState("");
   const [bio, setBio] = useState("");
   const [quantity, setQuantity] = useState("");
+  const [men, setMen] = useState(false);
+  const [women, setWomen] = useState(false);
+  const [tshirt, setTshirt] = useState(false);
+  const [pants, setPants] = useState(false);
+  const [shoes, setShoes] = useState(false);
+  const [socks, setSocks] = useState(false);
   const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
@@ -21,6 +27,12 @@ const AddProduct = () => {
       description,
       bio,
       quantity,
+      men,
+      women,
+      tshirt,
+      pants,
+      shoes,
+      socks,
     };
 
     const res = await fetch("/api/products", {
@@ -46,13 +58,19 @@ const AddProduct = () => {
       setDescription("");
       setBio("");
       setQuantity("");
+      setMen(false);
+      setWomen(false);
+      setTshirt(false);
+      setPants(false);
+      setShoes(false);
+      setSocks(false);
       console.log("new product added", json);
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <h3>Add Product:</h3>
+      <h3 className="mt-[200px]">Add Product:</h3>
       <label>Product name:</label>
       <input
         type="text"
@@ -92,6 +110,48 @@ const AddProduct = () => {
         type="number"
         onChange={(e) => setQuantity(e.target.value)}
         value={quantity}
+      />
+
+      <label>Men:</label>
+      <input
+        type="checkbox"
+        onChange={(e) => setMen(e.target.checked)}
+        checked={men}
+      />
+
+      <label>Women:</label>
+      <input
+        type="checkbox"
+        onChange={(e) => setWomen(e.target.checked)}
+        checked={women}
+      />
+
+      <label>T-shirts: :</label>
+      <input
+        type="checkbox"
+        onChange={(e) => setTshirt(e.target.checked)}
+        checked={tshirt}
+      />
+
+      <label>Pants:</label>
+      <input
+        type="checkbox"
+        onChange={(e) => setPants(e.target.checked)}
+        checked={pants}
+      />
+
+      <label>Shoes:</label>
+      <input
+        type="checkbox"
+        onChange={(e) => setShoes(e.target.checked)}
+        checked={shoes}
+      />
+
+      <label>Socks:</label>
+      <input
+        type="checkbox"
+        onChange={(e) => setSocks(e.target.checked)}
+        checked={socks}
       />
 
       <button>Add product</button>

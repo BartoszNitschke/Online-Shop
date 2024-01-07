@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import ProductDetails from "../components/ProductDetails";
+import Product from "../components/Product";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const [products, setProducts] = useState(null);
@@ -33,10 +34,23 @@ const Home = () => {
             SHOP NOW
           </button>
         </div>
-        {products &&
-          products.map((product) => {
-            return <ProductDetails key={product._id} product={product} />;
-          })}
+        <div className="flex flex-col justify-center items-center">
+          <h1 className="font-bold text-[48px] py-8 text-orange-500">
+            Our best products
+          </h1>
+          <div className="flex flex-wrap justify-center">
+            {/* pozniej wyswietlane wg najlepszej oceny */}
+            {products &&
+              products.slice(0, 5).map((product) => {
+                return (
+                  <Link to={"/product/" + product._id}>
+                    <Product key={product._id} product={product} />
+                  </Link>
+                );
+              })}
+            {/* <ProductDetails /> */}
+          </div>
+        </div>
       </div>
     </div>
   );
