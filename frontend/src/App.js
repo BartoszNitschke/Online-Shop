@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import { Login } from "./pages/Login";
 import { Signup } from "./pages/Signup";
 import AdminPanel from "./pages/AdminPanel";
+import Footer from "./components/Footer";
 
 function App() {
   const { user } = useUserContext();
@@ -28,6 +29,7 @@ function App() {
             <Route path="/product/:id" />
           </Routes>
         </div>
+        <Footer />
       </BrowserRouter>
     </div>
   );

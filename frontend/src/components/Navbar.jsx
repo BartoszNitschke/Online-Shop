@@ -64,7 +64,6 @@ const Navbar = () => {
                 <button onClick={handleLogout} className="text-[28px] px-2">
                   <CiLogout />
                 </button>
-                <h1>{user.email}</h1>
               </>
             )}
 
