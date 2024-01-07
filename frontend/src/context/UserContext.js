@@ -21,22 +21,24 @@ export const UserContextProvider = ({ children }) => {
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
 
-    const getDetails = async (email) => {
-      const userDetailsRes = await fetch("/api/user/" + email);
-      const detailsJSON = await userDetailsRes.json();
+    const fetchUserData = async () => {
+      const res = await fetch("/api/user/", {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
 
-      if (!userDetailsRes.ok) {
-        throw Error(detailsJSON.error);
-      }
+      const json = await res.json();
 
-      if (userDetailsRes.ok) {
-        dispatch({ type: "LOGIN", payload: detailsJSON });
+      if (res.ok) {
+        dispatch({ type: "LOGIN", payload: json });
       }
     };
 
+    // zmiana na usera db
+    // 1. requireUser pobiera i weryfikuje token, zwraca req.user._id
+    // 2.ten useEffect wywoluje funkcje w userController getUserDetails() i payloduje usera
+
     if (user) {
-      console.log("email usera: ", user.email);
-      getDetails(user.email);
+      fetchUserData();
     }
   }, []);
 

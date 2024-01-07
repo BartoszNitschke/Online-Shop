@@ -15,7 +15,7 @@ export const Signup = () => {
   };
 
   return (
-    <form onSubmit={handleSignUp}>
+    <form className="mt-[200px]" onSubmit={handleSignUp}>
       <h2>Sign up</h2>
 
       <label>Name: </label>
