@@ -6,6 +6,7 @@ import { Login } from "./pages/Login";
 import { Signup } from "./pages/Signup";
 import AdminPanel from "./pages/AdminPanel";
 import Footer from "./components/Footer";
+import ProductDetails from "./components/ProductDetails";
 
 function App() {
   const { user } = useUserContext();
@@ -26,7 +27,7 @@ function App() {
               element={!user ? <Signup /> : <Navigate to="/" />}
             />
             <Route path="/adminpanel" element={<AdminPanel />} />
-            <Route path="/product/:id" />
+            <Route path="/product/:id" element={<ProductDetails />} />
           </Routes>
         </div>
         <Footer />
