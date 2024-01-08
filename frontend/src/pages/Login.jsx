@@ -13,7 +13,7 @@ export const Login = () => {
   };
 
   return (
-    <form onSubmit={handleLogin}>
+    <form className="mt-[200px]" onSubmit={handleLogin}>
       <h2>Login</h2>
 
       <label>Email: </label>

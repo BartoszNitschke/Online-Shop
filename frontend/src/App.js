@@ -4,6 +4,8 @@ import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
 import { Login } from "./pages/Login";
 import { Signup } from "./pages/Signup";
+import AdminPanel from "./pages/AdminPanel";
+import Footer from "./components/Footer";
 
 function App() {
   const { user } = useUserContext();
@@ -23,8 +25,11 @@ function App() {
               path="/signup"
               element={!user ? <Signup /> : <Navigate to="/" />}
             />
+            <Route path="/adminpanel" element={<AdminPanel />} />
+            <Route path="/product/:id" />
           </Routes>
         </div>
+        <Footer />
       </BrowserRouter>
     </div>
   );

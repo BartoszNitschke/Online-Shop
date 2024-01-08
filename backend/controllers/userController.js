@@ -11,11 +11,13 @@ const loginUser = async (req, res) => {
   try {
     const user = await User.login(email, password);
     console.log("2nd", user.name);
-    const { name } = user.name;
 
     const token = createToken(user._id);
+    if (token) {
+      console.log("token created!");
+    }
 
-    res.status(200).json({ email, token, localData: name });
+    res.status(200).json({ token });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -29,31 +31,45 @@ const signupUser = async (req, res) => {
 
     const token = createToken(user._id);
 
-    res.status(200).json({ email, name, token });
+    res.status(200).json({ token });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 };
 
 const getUserDetails = async (req, res) => {
-  const { email } = req.params;
-  console.log("tutaj: ", email);
+  const { authorization } = req.headers;
 
-  // if (!mongoose.Types.ObjectId.isValid(id)) {
+  if (!authorization) {
+    return res.status(401).json({ error: "Authorization token required" });
+  }
+
+  const token = authorization.split(" ")[1];
+
+  try {
+    const _id = jwt.verify(token, process.env.SECRET);
+
+    const user = await User.findOne({ _id });
+    res.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({ error: "Request is not authorized" });
+  }
+
+  // const { id } = req.user._id;
+  // console.log("tutaj: ", id);
+
+  // // if (!mongoose.Types.ObjectId.isValid(id)) {
+  // //   return res.status(404).json({ error: "No user with this id" });
+  // // }
+
+  // if (!user) {
   //   return res.status(404).json({ error: "No user with this id" });
   // }
 
-  const user = await User.findOne({ email });
-
-  if (!user) {
-    return res.status(404).json({ error: "No user with this id" });
-  }
-
-  if (user) {
-    //console.log(user);
-  }
-
-  res.status(200).json(user);
+  // if (user) {
+  //   console.log(user);
+  // }
 };
 
 module.exports = { loginUser, signupUser, getUserDetails };

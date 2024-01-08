@@ -32,6 +32,12 @@ const addProduct = async (req, res) => {
     description,
     bio,
     quantity,
+    men,
+    women,
+    tshirt,
+    pants,
+    shoes,
+    socks,
   } = req.body;
 
   try {
@@ -43,6 +49,12 @@ const addProduct = async (req, res) => {
       description,
       bio,
       quantity,
+      men,
+      women,
+      tshirt,
+      pants,
+      shoes,
+      socks,
     });
     res.status(200).json(product);
   } catch (err) {
