@@ -3,22 +3,6 @@ import { FaCartPlus, FaSearchPlus } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const Product = ({ product }) => {
-  // const handleDelete = async () => {
-  //   const res = await fetch("/api/products/" + product._id, {
-  //     method: "DELETE",
-  //   });
-
-  //   const json = await res.json();
-
-  //   if (!res.ok) {
-  //     console.log(json.error);
-  //   }
-
-  //   if (res.ok) {
-  //     console.log(product.name + "has been deleted");
-  //   }
-  // };
-
   return (
     <div className="flex flex-col max-w-[300px]  items-center  rounded-lg m-3">
       <img
