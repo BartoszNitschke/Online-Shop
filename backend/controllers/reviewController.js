@@ -42,16 +42,16 @@ const deleteReview = async (req, res) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ error: "No product with this id" });
+    return res.status(404).json({ error: "No review with this id" });
   }
 
-  const product = await Product.findOneAndDelete({ _id: id });
+  const review = await Review.findOneAndDelete({ _id: id });
 
-  if (!product) {
-    return res.status(404).json({ error: "No product with this id" });
+  if (!review) {
+    return res.status(404).json({ error: "No review with this id" });
   }
 
-  res.status(200).json(product);
+  res.status(200).json(review);
 };
 
 const updateReview = async (req, res) => {

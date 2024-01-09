@@ -105,9 +105,9 @@ const ProductDetails = () => {
     }
   };
 
-  const handleDelete = async () => {
+  const handleDelete = async (id) => {
     if (product && product._id && user && user.admin) {
-      const res = await fetch("/api/reviews/" + product._id, {
+      const res = await fetch("/api/reviews/" + id, {
         method: "DELETE",
       });
 
@@ -250,7 +250,7 @@ const ProductDetails = () => {
               return (
                 <div className="py-3 flex items-center">
                   {user && user.admin && (
-                    <button onClick={handleDelete}>
+                    <button onClick={() => handleDelete(rev._id)}>
                       <MdDelete className="text-[32px] mr-8 text-gray-800 hover:text-orange-400" />
                     </button>
                   )}
