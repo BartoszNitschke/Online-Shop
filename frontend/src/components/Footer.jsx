@@ -72,6 +72,7 @@ const Footer = () => {
             href="https://unsplash.com"
             target="_blank"
             className="px-1 flex items-center"
+            rel="noreferrer"
           >
             unsplash.com
             <FaMousePointer className="pl-1 text-gray-900" />
@@ -82,13 +83,13 @@ const Footer = () => {
           <a
             href="https://github.com/BartoszNitschke/"
             target="_blank"
+            rel="noreferrer"
             className="px-1 flex items-center "
           >
             Bartosz Nitschke
             <FaMousePointer className="pl-1 text-gray-900" />
           </a>
         </h1>
-        <a href="https://github.com/BartoszNitschke/" target="_blank"></a>
       </div>
     </>
   );

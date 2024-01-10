@@ -56,6 +56,18 @@ const productSchema = new Schema(
       type: Boolean,
       required: true,
     },
+    rating: {
+      type: Number,
+      required: false,
+    },
+    ratingSum: {
+      type: Number,
+      required: false,
+    },
+    ratingCount: {
+      type: Number,
+      required: false,
+    },
   },
   { timestamps: true }
 );

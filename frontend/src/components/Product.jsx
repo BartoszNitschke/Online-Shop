@@ -2,23 +2,7 @@ import React from "react";
 import { FaCartPlus, FaSearchPlus } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-const ProductDetails = ({ product }) => {
-  // const handleDelete = async () => {
-  //   const res = await fetch("/api/products/" + product._id, {
-  //     method: "DELETE",
-  //   });
-
-  //   const json = await res.json();
-
-  //   if (!res.ok) {
-  //     console.log(json.error);
-  //   }
-
-  //   if (res.ok) {
-  //     console.log(product.name + "has been deleted");
-  //   }
-  // };
-
+const Product = ({ product }) => {
   return (
     <div className="flex flex-col max-w-[300px]  items-center  rounded-lg m-3">
       <img
@@ -41,7 +25,9 @@ const ProductDetails = ({ product }) => {
         </h4>
       </div>
       <div className="absolute flex justify-center items-center h-[450px] w-[300px] opacity-0 hover:opacity-100 transition-opacity bg-black-rgba">
-        <FaCartPlus className="text-[72px] text-orange-500 px-3 hover:text-gray-300" />
+        <button>
+          <FaCartPlus className="text-[72px] text-orange-500 px-3 hover:text-gray-300" />
+        </button>
         <Link to={"/product/" + product._id}>
           <FaSearchPlus className="text-[72px] text-orange-500 px-3 hover:text-gray-300" />
         </Link>
@@ -50,4 +36,4 @@ const ProductDetails = ({ product }) => {
   );
 };
 
-export default ProductDetails;
+export default Product;

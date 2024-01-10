@@ -78,18 +78,77 @@ const deleteProduct = async (req, res) => {
   res.status(200).json(product);
 };
 
-const updateProduct = async (req, res) => {
+const addRating = async (req, res) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: "No product with this id" });
   }
 
+  const existingProduct = await Product.findById(id);
+
+  // Jeśli nie ma jeszcze pola rating, ustaw początkowe wartości
+  const existingRatingSum = existingProduct
+    ? existingProduct.ratingSum || 0
+    : 0;
+  const existingRatingCount = existingProduct
+    ? existingProduct.ratingCount || 0
+    : 0;
+
+  // Jeśli jest pole rating w req.body, dodaj nową ocenę do sumy i zwiększ licznik
+  const newRating = req.body.rating !== undefined ? req.body.rating : 0;
+  const newRatingSum = existingRatingSum + newRating;
+  const newRatingCount = existingRatingCount + 1;
+  const newAverageRating = newRatingSum / newRatingCount;
+
   const product = await Product.findOneAndUpdate(
     { _id: id },
     {
       ...req.body,
-    }
+      ratingSum: newRatingSum,
+      ratingCount: newRatingCount,
+      rating: newAverageRating,
+    },
+    { new: true, upsert: true, runValidators: true }
+  );
+
+  if (!product) {
+    return res.status(404).json({ error: "No product with this id" });
+  }
+
+  res.status(200).json(product);
+};
+
+const deleteRating = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ error: "No product with this id" });
+  }
+
+  const existingProduct = await Product.findById(id);
+
+  const existingRatingSum = existingProduct
+    ? existingProduct.ratingSum || 0
+    : 0;
+  const existingRatingCount = existingProduct
+    ? existingProduct.ratingCount || 0
+    : 0;
+
+  const newRating = req.body.rating !== undefined ? req.body.rating : 0;
+  const newRatingSum = existingRatingSum - newRating;
+  const newRatingCount = existingRatingCount - 1;
+  const newAverageRating = newRatingSum / newRatingCount;
+
+  const product = await Product.findOneAndUpdate(
+    { _id: id },
+    {
+      ...req.body,
+      ratingSum: newRatingSum,
+      ratingCount: newRatingCount,
+      rating: newAverageRating,
+    },
+    { new: true, upsert: true, runValidators: true }
   );
 
   if (!product) {
@@ -104,5 +163,6 @@ module.exports = {
   getProducts,
   getProduct,
   deleteProduct,
-  updateProduct,
+  addRating,
+  deleteRating,
 };

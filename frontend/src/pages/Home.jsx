@@ -48,7 +48,6 @@ const Home = () => {
                   </Link>
                 );
               })}
-            {/* <ProductDetails /> */}
           </div>
         </div>
       </div>
