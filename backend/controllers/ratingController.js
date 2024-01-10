@@ -46,13 +46,13 @@ const deleteRating = async (req, res) => {
     return res.status(404).json({ error: "No review with this id" });
   }
 
-  const review = await Review.findOneAndDelete({ _id: id });
+  const rating = await Rating.findOneAndDelete({ _id: id });
 
-  if (!review) {
+  if (!rating) {
     return res.status(404).json({ error: "No review with this id" });
   }
 
-  res.status(200).json(review);
+  res.status(200).json(rating);
 };
 
 const updateRating = async (req, res) => {

@@ -3,7 +3,7 @@ import { useUserContext } from "../hooks/useUserContext";
 import StarRatingComponent from "react-star-rating-component";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdStarRate } from "react-icons/md";
 
 const ProductDetails = () => {
   const { user } = useUserContext();
@@ -11,6 +11,7 @@ const ProductDetails = () => {
   const [review, setReview] = useState("");
   const [reviews, setReviews] = useState(null);
   const [rating, setRating] = useState(0);
+  const [usersRating, setUsersRating] = useState(null);
   const [error, setError] = useState(null);
 
   const url = window.location.pathname;
@@ -43,6 +44,19 @@ const ProductDetails = () => {
 
     fetchReviews();
   }, [reviews]);
+
+  useEffect(() => {
+    const fetchRatings = async () => {
+      const res = await fetch("/api/rating");
+      const json = await res.json();
+
+      if (res.ok) {
+        setUsersRating(json);
+      }
+    };
+
+    fetchRatings();
+  }, [usersRating]);
 
   const handleReview = async (e) => {
     e.preventDefault();
@@ -83,7 +97,34 @@ const ProductDetails = () => {
       rating: nextValue,
     };
 
-    if (product && product._id && user) {
+    const newRating = {
+      value: nextValue,
+      author: user.name,
+      userId: user._id,
+      prodId: product._id,
+    };
+
+    if (product && user) {
+      const res = await fetch("/api/rating/", {
+        method: "POST",
+        body: JSON.stringify(newRating),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const json = await res.json();
+      if (!res.ok) {
+        setError(json.error);
+      }
+      if (res.ok) {
+        setError(null);
+
+        console.log("new rating added", json);
+      }
+    }
+
+    if (product && user) {
       const res = await fetch("/api/products/" + product._id, {
         method: "PATCH",
         body: JSON.stringify(userRating),
@@ -100,7 +141,7 @@ const ProductDetails = () => {
 
       if (res.ok) {
         setError(null);
-        console.log("new rating added", json);
+        console.log("new rating added in product collection", json);
       }
     }
   };
@@ -119,6 +160,49 @@ const ProductDetails = () => {
 
       if (res.ok) {
         console.log("review has been deleted");
+      }
+    }
+  };
+
+  const handleRatingDelete = async (id, value) => {
+    if (product && product._id && user && user.admin && usersRating) {
+      const res = await fetch("/api/rating/" + id, {
+        method: "DELETE",
+      });
+
+      const json = await res.json();
+
+      if (!res.ok) {
+        console.log(json.error);
+      }
+
+      if (res.ok) {
+        console.log("rating has been deleted");
+      }
+    }
+
+    const userRating = {
+      rating: value,
+    };
+
+    if (product && user) {
+      const res = await fetch("/api/products/deleteRating/" + product._id, {
+        method: "PATCH",
+        body: JSON.stringify(userRating),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const json = await res.json();
+
+      if (!res.ok) {
+        setError(json.error);
+      }
+
+      if (res.ok) {
+        setError(null);
+        console.log("rating deleted in product collection", json);
       }
     }
   };
@@ -272,6 +356,39 @@ const ProductDetails = () => {
               );
             } else return <></>;
           })}
+        {usersRating && user && user.admin && (
+          <div>
+            <h1 className="text-[20px] text-orange-500 font-semibold py-5">
+              User ratings
+            </h1>
+            {usersRating.map((rat) => {
+              if (rat.prodId === product._id) {
+                return (
+                  <div className="flex items-center">
+                    <button
+                      onClick={() => {
+                        handleRatingDelete(rat._id, rat.value);
+                      }}
+                    >
+                      <MdDelete className="text-[32px] mr-8 text-gray-800 hover:text-orange-400" />
+                    </button>
+                    <div className="flex flex-col justify-center py-2">
+                      <div className="flex items-center">
+                        {Array.from({ length: rat.value }).map((_, index) => (
+                          <MdStarRate
+                            key={index}
+                            className="text-[20px] text-orange-600"
+                          />
+                        ))}
+                      </div>
+                      <p className="font-semibold py-2">by {rat.author}</p>
+                    </div>
+                  </div>
+                );
+              }
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
