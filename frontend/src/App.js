@@ -8,6 +8,8 @@ import AdminPanel from "./pages/AdminPanel";
 import Footer from "./components/Footer";
 import ProductDetails from "./components/ProductDetails";
 import OurProducts from "./pages/OurProducts";
+import Men from "./pages/MenProducts";
+import Women from "./pages/WomenProducts";
 
 function App() {
   const { user } = useUserContext();
@@ -20,6 +22,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/products" element={<OurProducts />} />
+            <Route path="/men" element={<Men />} />
+            <Route path="/women" element={<Women />} />
             <Route
               path="/login"
               element={!user ? <Login /> : <Navigate to="/" />}

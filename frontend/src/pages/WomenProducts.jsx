@@ -3,7 +3,7 @@ import Product from "../components/Product";
 import { Range } from "react-range";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
-const OurProducts = () => {
+const WomenProducts = () => {
   const [val, setVal] = useState([20, 80]);
   const [products, setProducts] = useState(null);
   const [filter, setFilter] = useState(null);
@@ -16,7 +16,7 @@ const OurProducts = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const res = await fetch("/api/products");
+      const res = await fetch("/api/products/women");
       const json = await res.json();
 
       if (res.ok) {
@@ -236,4 +236,4 @@ const OurProducts = () => {
   );
 };
 
-export default OurProducts;
+export default WomenProducts;

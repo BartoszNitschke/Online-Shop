@@ -6,11 +6,20 @@ const {
   deleteProduct,
   addRating,
   deleteRating,
+  getProductsByRating,
+  getMenProducts,
+  getWomenProducts,
 } = require("../controllers/productController");
 
 const router = express.Router();
 
 router.get("/", getProducts);
+
+router.get("/rating", getProductsByRating);
+
+router.get("/men", getMenProducts);
+
+router.get("/women", getWomenProducts);
 
 router.get("/:id", getProduct);
 

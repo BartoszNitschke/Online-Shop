@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Product from "../components/Product";
 import { Link } from "react-router-dom";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const Home = () => {
   const [products, setProducts] = useState(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const res = await fetch("/api/products");
+      const res = await fetch("/api/products/rating");
       const json = await res.json();
 
       if (res.ok) {
@@ -39,7 +40,11 @@ const Home = () => {
             Our best products
           </h1>
           <div className="flex flex-wrap justify-center">
-            {/* pozniej wyswietlane wg najlepszej oceny */}
+            {!products && (
+              <div className="h-[500px] w-full flex justify-center items-center">
+                <AiOutlineLoading3Quarters className="text-[64px] animate-spin" />
+              </div>
+            )}
             {products &&
               products.slice(0, 5).map((product) => {
                 return (

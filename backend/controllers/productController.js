@@ -4,6 +4,47 @@ const mongoose = require("mongoose");
 const getProducts = async (req, res) => {
   const products = await Product.find({});
 
+  if (!products) {
+    return res.status(404).json({ error: "No products could be found" });
+  }
+
+  res.status(200).json(products);
+};
+
+const getProductsByRating = async (req, res) => {
+  const products = await Product.aggregate([
+    {
+      $sort: { rating: -1 },
+    },
+    {
+      $limit: 5,
+    },
+  ]);
+
+  if (!products) {
+    return res.status(404).json({ error: "No products could be found" });
+  }
+
+  res.status(200).json(products);
+};
+
+const getMenProducts = async (req, res) => {
+  const products = await Product.find({ men: true });
+
+  if (!products) {
+    return res.status(404).json({ error: "No products could be found" });
+  }
+
+  res.status(200).json(products);
+};
+
+const getWomenProducts = async (req, res) => {
+  const products = await Product.find({ women: true });
+
+  if (!products) {
+    return res.status(404).json({ error: "No products could be found" });
+  }
+
   res.status(200).json(products);
 };
 
@@ -164,6 +205,9 @@ const deleteRating = async (req, res) => {
 module.exports = {
   addProduct,
   getProducts,
+  getProductsByRating,
+  getMenProducts,
+  getWomenProducts,
   getProduct,
   deleteProduct,
   addRating,
