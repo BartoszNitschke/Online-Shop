@@ -138,7 +138,10 @@ const deleteRating = async (req, res) => {
   const newRating = req.body.rating !== undefined ? req.body.rating : 0;
   const newRatingSum = existingRatingSum - newRating;
   const newRatingCount = existingRatingCount - 1;
-  const newAverageRating = newRatingSum / newRatingCount;
+  let newAverageRating = 0;
+  if (newRatingSum !== 0) {
+    newAverageRating = newRatingSum / newRatingCount;
+  }
 
   const product = await Product.findOneAndUpdate(
     { _id: id },

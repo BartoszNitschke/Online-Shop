@@ -7,6 +7,12 @@ const OurProducts = () => {
   const [val, setVal] = useState([20, 80]);
   const [products, setProducts] = useState(null);
   const [filter, setFilter] = useState(null);
+  const [sortDirection, setSortDirection] = useState({
+    priceNoDelivery: null,
+    priceDelivery: null,
+    createdAt: null,
+    rating: null,
+  });
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -21,12 +27,32 @@ const OurProducts = () => {
     fetchProducts();
   }, []);
 
-  useEffect(() => {
-    console.log(filter); // Zaktualizowane wartości filter będą widoczne tutaj
-  }, [filter]);
+  const sortByAsc = (filteredProp) => {
+    const sortedProducts = [...products];
 
-  //use state na filtry - tablica
-  //use effect odswiezajacy co zmiane filtrow i zmieniajacy products nizej \/
+    const newSortDirection =
+      sortDirection[filteredProp] === null
+        ? true
+        : !sortDirection[filteredProp];
+
+    setSortDirection({ ...sortDirection, [filteredProp]: newSortDirection });
+
+    sortedProducts.sort((a, b) => {
+      let first = a[filteredProp] === null ? 0 : a[filteredProp];
+      let second = b[filteredProp] === null ? 0 : b[filteredProp];
+
+      if (filteredProp === "createdAt") {
+        first = new Date(a[filteredProp]);
+        second = new Date(b[filteredProp]);
+      }
+
+      console.log("siemka", a[filteredProp]);
+      const comparison = first - second;
+      return newSortDirection ? comparison : -comparison;
+    });
+
+    setProducts(sortedProducts);
+  };
 
   return (
     <div className="mt-[150px]">
@@ -142,6 +168,33 @@ const OurProducts = () => {
           className="border-2 border-black"
         >
           Socks
+        </button>
+      </div>
+      <div>
+        Sort by:
+        <button
+          onClick={() => sortByAsc("priceNoDelivery")}
+          className="border-2 border-black"
+        >
+          Price
+        </button>
+        <button
+          onClick={() => sortByAsc("priceDelivery")}
+          className="border-2 border-black"
+        >
+          Price with Delivery
+        </button>
+        <button
+          onClick={() => sortByAsc("createdAt")}
+          className="border-2 border-black"
+        >
+          Date added
+        </button>
+        <button
+          onClick={() => sortByAsc("rating")}
+          className="border-2 border-black"
+        >
+          Rating
         </button>
       </div>
       <div className="flex flex-wrap justify-center">
