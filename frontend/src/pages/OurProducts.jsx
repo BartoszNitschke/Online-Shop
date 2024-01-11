@@ -6,6 +6,7 @@ import { Range, getTrackBackground } from "react-range";
 const OurProducts = () => {
   const [val, setVal] = useState([20, 80]);
   const [products, setProducts] = useState(null);
+  const [filter, setFilter] = useState(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -20,6 +21,10 @@ const OurProducts = () => {
     fetchProducts();
   }, []);
 
+  useEffect(() => {
+    console.log(filter); // Zaktualizowane wartości filter będą widoczne tutaj
+  }, [filter]);
+
   //use state na filtry - tablica
   //use effect odswiezajacy co zmiane filtrow i zmieniajacy products nizej \/
 
@@ -27,9 +32,9 @@ const OurProducts = () => {
     <div className="mt-[150px]">
       <Range
         values={val}
-        step={1}
+        step={10}
         min={0}
-        max={100}
+        max={1000}
         onChange={(values) => {
           console.log(values);
           setVal(values);
@@ -88,13 +93,71 @@ const OurProducts = () => {
       <p>
         {val[0]}, {val[1]}
       </p>
+      <div>
+        Filter by:
+        <button
+          onClick={() => {
+            setFilter("men");
+          }}
+          className="border-2 border-black"
+        >
+          Men
+        </button>
+        <button
+          onClick={() => {
+            setFilter("women");
+          }}
+          className="border-2 border-black"
+        >
+          Women
+        </button>
+        <button
+          onClick={() => {
+            setFilter("tshirt");
+          }}
+          className="border-2 border-black"
+        >
+          T-shirts
+        </button>
+        <button
+          onClick={() => {
+            setFilter("pants");
+          }}
+          className="border-2 border-black"
+        >
+          Pants
+        </button>
+        <button
+          onClick={() => {
+            setFilter("shoes");
+          }}
+          className="border-2 border-black"
+        >
+          Shoes
+        </button>
+        <button
+          onClick={() => {
+            setFilter("socks");
+          }}
+          className="border-2 border-black"
+        >
+          Socks
+        </button>
+      </div>
       <div className="flex flex-wrap justify-center">
         {/* pozniej wyswietlane wg najlepszej oceny */}
         {products &&
           products.map((product) => {
             if (
               product.priceNoDelivery >= val[0] &&
-              product.priceNoDelivery <= val[1]
+              product.priceNoDelivery <= val[1] &&
+              product[filter]
+            ) {
+              return <Product key={product._id} product={product} />;
+            } else if (
+              product.priceNoDelivery >= val[0] &&
+              product.priceNoDelivery <= val[1] &&
+              filter === null
             ) {
               return <Product key={product._id} product={product} />;
             }
