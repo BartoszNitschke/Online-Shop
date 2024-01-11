@@ -7,6 +7,7 @@ import { Signup } from "./pages/Signup";
 import AdminPanel from "./pages/AdminPanel";
 import Footer from "./components/Footer";
 import ProductDetails from "./components/ProductDetails";
+import OurProducts from "./pages/OurProducts";
 
 function App() {
   const { user } = useUserContext();
@@ -18,6 +19,7 @@ function App() {
         <div>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/products" element={<OurProducts />} />
             <Route
               path="/login"
               element={!user ? <Login /> : <Navigate to="/" />}
