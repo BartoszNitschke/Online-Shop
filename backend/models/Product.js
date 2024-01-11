@@ -58,7 +58,7 @@ const productSchema = new Schema(
     },
     rating: {
       type: Number,
-      required: false,
+      default: 0,
     },
     ratingSum: {
       type: Number,
