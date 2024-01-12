@@ -23,7 +23,7 @@ const Navbar = () => {
   return (
     <div className="w-full flex flex-col items-center">
       <div className="bg-orange-500 text-gray-200 text-center py-2 text-[16px] font-semibold  z-10 fixed w-full ">
-        <h1>Free shipping on order over 40$. Easy returns!</h1>
+        <h1>Free shipping on order over 250 PLN. Easy returns!</h1>
       </div>
       <div className=" w-[100%] mt-10 fixed z-10  h-[70px] bg-white flex justify-center shadow-md shadow-gray-300">
         <div className="w-[95%] flex justify-between items-center">
@@ -58,9 +58,11 @@ const Navbar = () => {
                 <button className="text-[28px] px-2">
                   <CiUser />
                 </button>
-                <button className="text-[30px] px-2">
-                  <CiShoppingCart />
-                </button>
+                <Link to="/cart">
+                  <button className="text-[30px] px-2 mt-1">
+                    <CiShoppingCart />
+                  </button>
+                </Link>
                 <button onClick={handleLogout} className="text-[28px] px-2">
                   <CiLogout />
                 </button>

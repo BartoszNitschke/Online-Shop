@@ -1,18 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { useUserContext } from "../hooks/useUserContext";
 import StarRatingComponent from "react-star-rating-component";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { MdDelete, MdStarRate } from "react-icons/md";
+import { CartContext } from "../context/CartContext";
 
 const ProductDetails = () => {
   const { user } = useUserContext();
   const [product, setProduct] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const quantityRef = useRef();
   const [review, setReview] = useState("");
   const [reviews, setReviews] = useState(null);
   const [rating, setRating] = useState(0);
   const [usersRating, setUsersRating] = useState(null);
   const [error, setError] = useState(null);
+  const { addProducts } = useContext(CartContext);
 
   const url = window.location.pathname;
   const id = url.slice(url.indexOf("/product/") + 9);
@@ -31,6 +35,17 @@ const ProductDetails = () => {
 
     fetchProduct();
   }, [product, id]);
+
+  const handleAddToCart = () => {
+    const inputValue = parseInt(quantityRef.current.value, 10);
+
+    if (isNaN(inputValue) || inputValue < 1) {
+      console.error("invalid quantity value");
+      return;
+    }
+
+    addProducts(product, inputValue);
+  };
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -269,10 +284,23 @@ const ProductDetails = () => {
                   stock
                 </p>
               </div>
-              <form className="flex justify-center items-center pt-8">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleAddToCart();
+                }}
+                className="flex justify-center items-center pt-8"
+              >
                 <input
+                  ref={quantityRef}
                   className="w-[60px] text-[28px] border-2 border-black rounded-xl mx-1"
                   type="number"
+                  value={quantity}
+                  onChange={(e) => {
+                    setQuantity(e.target.value);
+                  }}
+                  min={1}
+                  defaultValue={1}
                 />
                 <button className="text-[24px] w-full py-2 bg-orange-500 rounded-3xl mx-1 shadow-md shadow-gray-700">
                   Add to cart
