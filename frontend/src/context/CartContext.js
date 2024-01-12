@@ -8,10 +8,62 @@ export const CartContextProvider = ({ children }) => {
     return storedCart ? JSON.parse(storedCart) : [];
   });
 
+  const [totalPrice, setTotalPrice] = useState(0);
+
   //przed ustawieniem do ls czy produkt istnieje
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const fetchProducts = async (id) => {
+      try {
+        const res = await fetch("/api/products/" + id);
+        const json = await res.json();
+
+        if (res.ok) {
+          const isProductInArray = products.find(
+            (product) => product._id === json._id
+          );
+
+          if (!isProductInArray) {
+            setProducts((prevProducts) => [...prevProducts, json]);
+          }
+        } else {
+          console.error(`Error fetching product with ID: ${id}`);
+          setCart((prevCart) =>
+            prevCart.filter((product) => product._id !== id)
+          );
+        }
+      } catch (error) {
+        console.error(`Error fetching product with ID: ${id}`, error);
+        setCart((prevCart) => prevCart.filter((product) => product._id !== id));
+      }
+    };
+
+    cart.forEach((product) => {
+      fetchProducts(product._id);
+    });
+
+    const total = cart.reduce((acc, currentProduct) => {
+      const productInCart = products.find(
+        (product) => product._id === currentProduct._id
+      );
+
+      if (productInCart) {
+        acc += productInCart.priceNoDelivery * currentProduct.quantity;
+      }
+
+      return acc;
+    }, 0);
+
+    if (total >= 250) {
+      setTotalPrice(total);
+    } else {
+      setTotalPrice(total + 15);
+    }
+  }, [cart, products]);
 
   const addToCart = (product) => {
     const { _id, name, priceNoDelivery, url } = product;
@@ -108,6 +160,8 @@ export const CartContextProvider = ({ children }) => {
       value={{
         cart,
         setCart,
+        totalPrice,
+        setTotalPrice,
         addToCart,
         addQuantity,
         addProducts,

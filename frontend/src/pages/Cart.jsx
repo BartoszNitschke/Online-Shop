@@ -3,59 +3,15 @@ import { CartContext } from "../context/CartContext";
 import { Link } from "react-router-dom";
 
 const Cart = () => {
-  const { cart, setCart, addQuantity, substractQuantity, removeFromCart } =
-    useContext(CartContext);
-  const [products, setProducts] = useState([]);
-  const [totalPrice, setTotalPrice] = useState(0);
-
-  useEffect(() => {
-    const fetchProducts = async (id) => {
-      try {
-        const res = await fetch("/api/products/" + id);
-        const json = await res.json();
-
-        if (res.ok) {
-          const isProductInArray = products.find(
-            (product) => product._id === json._id
-          );
-
-          if (!isProductInArray) {
-            setProducts((prevProducts) => [...prevProducts, json]);
-          }
-        } else {
-          console.error(`Error fetching product with ID: ${id}`);
-          setCart((prevCart) =>
-            prevCart.filter((product) => product._id !== id)
-          );
-        }
-      } catch (error) {
-        console.error(`Error fetching product with ID: ${id}`, error);
-        setCart((prevCart) => prevCart.filter((product) => product._id !== id));
-      }
-    };
-
-    cart.forEach((product) => {
-      fetchProducts(product._id);
-    });
-
-    const total = cart.reduce((acc, currentProduct) => {
-      const productInCart = products.find(
-        (product) => product._id === currentProduct._id
-      );
-
-      if (productInCart) {
-        acc += productInCart.priceNoDelivery * currentProduct.quantity;
-      }
-
-      return acc;
-    }, 0);
-
-    if (total >= 250) {
-      setTotalPrice(total);
-    } else {
-      setTotalPrice(total + 15);
-    }
-  }, [cart, products]);
+  const {
+    cart,
+    setCart,
+    totalPrice,
+    setTotalPrice,
+    addQuantity,
+    substractQuantity,
+    removeFromCart,
+  } = useContext(CartContext);
 
   return (
     <div className="mt-[150px]">
@@ -96,6 +52,13 @@ const Cart = () => {
 
       <p>Delivery: {totalPrice >= 250 ? "free" : "15 PLN"}</p>
       <p>Total price: {totalPrice}</p>
+      {cart.length > 0 && (
+        <Link to="/order">
+          <button className="border-2 border-black text-[20px] px-4 py-1">
+            Complete order
+          </button>
+        </Link>
+      )}
     </div>
   );
 };

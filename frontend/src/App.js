@@ -11,6 +11,7 @@ import OurProducts from "./pages/OurProducts";
 import Men from "./pages/MenProducts";
 import Women from "./pages/WomenProducts";
 import Cart from "./pages/Cart";
+import Order from "./pages/Order";
 
 function App() {
   const { user } = useUserContext();
@@ -34,6 +35,7 @@ function App() {
               element={!user ? <Signup /> : <Navigate to="/" />}
             />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/order" element={<Order />} />
             <Route path="/adminpanel" element={<AdminPanel />} />
             <Route path="/product/:id" element={<ProductDetails />} />
           </Routes>
