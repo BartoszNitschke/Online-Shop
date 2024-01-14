@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { CartContext } from "../context/CartContext";
 import { useUserContext } from "../hooks/useUserContext";
 import { useFormik } from "formik";
@@ -31,13 +31,22 @@ const inPostSchema = yup.object().shape({
 
 const Order = () => {
   const { cart, totalPrice, clearCart } = useContext(CartContext);
+  const [modal, setModal] = useState(false);
+  const [inPostModal, setInPostModal] = useState(false);
   const { user } = useUserContext();
 
+  const showModal = () => {
+    setModal(!modal);
+  };
+
   const onSubmit = async (values, actions) => {
+    if (cart.length <= 0) {
+      throw Error("Impossible action!");
+    }
+
     console.log("siemano");
     console.log(cart);
     console.log(values);
-    actions.resetForm();
 
     let product = {};
 
@@ -70,8 +79,24 @@ const Order = () => {
     }
 
     if (res.ok) {
-      console.log("new order added", json);
-      clearCart();
+      const patchRes = await fetch("/api/products", {
+        method: "PATCH",
+        body: JSON.stringify(product),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!patchRes.ok) {
+        throw Error("couldnt patch products request");
+      }
+
+      if (patchRes.ok) {
+        console.log("new order added", json);
+        actions.resetForm();
+        clearCart();
+        showModal();
+      }
     }
   };
 
@@ -245,9 +270,18 @@ const Order = () => {
           )}
         </label>
 
-        <button disabled={isSubmitting} type="submit">
-          Submit
+        <button type="button" onClick={() => showModal()}>
+          siemano
         </button>
+
+        {modal && (
+          <div>
+            <p>Confirm your order</p>
+            <button disabled={isSubmitting} type="submit">
+              Confirm
+            </button>
+          </div>
+        )}
       </form>
 
       <form onSubmit={ipHandleSubmit} autoComplete="off">

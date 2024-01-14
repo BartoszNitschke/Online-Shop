@@ -128,7 +128,6 @@ const addRating = async (req, res) => {
 
   const existingProduct = await Product.findById(id);
 
-  // Jeśli nie ma jeszcze pola rating, ustaw początkowe wartości
   const existingRatingSum = existingProduct
     ? existingProduct.ratingSum || 0
     : 0;
@@ -136,7 +135,6 @@ const addRating = async (req, res) => {
     ? existingProduct.ratingCount || 0
     : 0;
 
-  // Jeśli jest pole rating w req.body, dodaj nową ocenę do sumy i zwiększ licznik
   const newRating = req.body.rating !== undefined ? req.body.rating : 0;
   const newRatingSum = existingRatingSum + newRating;
   const newRatingCount = existingRatingCount + 1;
@@ -202,6 +200,29 @@ const deleteRating = async (req, res) => {
   res.status(200).json(product);
 };
 
+const updateProduct = async (req, res) => {
+  console.log("xdddddd");
+  try {
+    const { products } = req.body;
+    console.log(products);
+
+    const updatePromises = products.map(async ({ _id, quantity }) => {
+      if (!mongoose.Types.ObjectId.isValid(_id)) {
+        throw new Error("Invalid product id in the request");
+      }
+
+      return Product.updateOne({ _id }, { $inc: { quantity: -quantity } });
+    });
+
+    await Promise.all(updatePromises);
+
+    res.status(200).json({ message: "Products updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   addProduct,
   getProducts,
@@ -212,4 +233,5 @@ module.exports = {
   deleteProduct,
   addRating,
   deleteRating,
+  updateProduct,
 };
