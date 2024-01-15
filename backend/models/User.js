@@ -63,10 +63,12 @@ userSchema.statics.login = async function (email, password) {
     throw Error("Incorrect email");
   }
 
+  //ogarnac to
+
   const match = await bcrypt.compare(password, user.password);
 
   if (!match) {
-    throw Error("Incorrect password");
+    throw Error("Incorrect password!!");
   }
 
   return user;

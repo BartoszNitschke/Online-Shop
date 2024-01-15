@@ -55,9 +55,11 @@ const Navbar = () => {
                 <button className="text-[28px] px-2">
                   <CiSearch />
                 </button>
-                <button className="text-[28px] px-2">
-                  <CiUser />
-                </button>
+                <Link to="/account">
+                  <button className="text-[28px] px-2">
+                    <CiUser />
+                  </button>
+                </Link>
                 <Link to="/cart">
                   <button className="text-[30px] px-2 mt-1">
                     <CiShoppingCart />

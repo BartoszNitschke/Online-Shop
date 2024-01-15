@@ -12,6 +12,7 @@ import Men from "./pages/MenProducts";
 import Women from "./pages/WomenProducts";
 import Cart from "./pages/Cart";
 import Order from "./pages/Order";
+import Account from "./pages/Account";
 
 function App() {
   const { user } = useUserContext();
@@ -33,6 +34,10 @@ function App() {
             <Route
               path="/signup"
               element={!user ? <Signup /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/account"
+              element={!user ? <Navigate to="/" /> : <Account />}
             />
             <Route path="/cart" element={<Cart />} />
             <Route path="/order" element={<Order />} />
