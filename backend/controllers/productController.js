@@ -211,6 +211,17 @@ const updateProduct = async (req, res) => {
         throw new Error("Invalid product id in the request");
       }
 
+      const product = await Product.findById(_id);
+      if (!product) {
+        throw new Error("Product not found");
+      }
+
+      const updatedQuantity = product.quantity - quantity;
+
+      if (updatedQuantity < 0) {
+        throw new Error("Insufficient quantity in stock");
+      }
+
       return Product.updateOne({ _id }, { $inc: { quantity: -quantity } });
     });
 

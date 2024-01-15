@@ -30,9 +30,11 @@ const inPostSchema = yup.object().shape({
 });
 
 const Order = () => {
-  const { cart, totalPrice, clearCart } = useContext(CartContext);
+  const { cart, totalPrice, setTotalPrice, isFree, clearCart } =
+    useContext(CartContext);
   const [modal, setModal] = useState(false);
   const [inPostModal, setInPostModal] = useState(false);
+  const [method, setMethod] = useState("inpost");
   const { user } = useUserContext();
 
   const showModal = () => {
@@ -64,34 +66,34 @@ const Order = () => {
       };
     }
 
-    const res = await fetch("/api/orders", {
-      method: "POST",
+    const patchRes = await fetch("/api/products", {
+      method: "PATCH",
       body: JSON.stringify(product),
       headers: {
         "Content-Type": "application/json",
       },
     });
 
-    const json = await res.json();
-
-    if (!res.ok) {
+    if (!patchRes.ok) {
       throw Error("couldnt add an order");
     }
 
-    if (res.ok) {
-      const patchRes = await fetch("/api/products", {
-        method: "PATCH",
+    if (patchRes.ok) {
+      const res = await fetch("/api/orders", {
+        method: "POST",
         body: JSON.stringify(product),
         headers: {
           "Content-Type": "application/json",
         },
       });
 
-      if (!patchRes.ok) {
-        throw Error("couldnt patch products request");
+      const json = await res.json();
+
+      if (!res.ok) {
+        throw Error("couldnt add new order request");
       }
 
-      if (patchRes.ok) {
+      if (res.ok) {
         console.log("new order added", json);
         actions.resetForm();
         clearCart();
@@ -141,203 +143,286 @@ const Order = () => {
     onSubmit,
   });
 
+  const toggleMethod = () => {
+    if (method === "inpost") {
+      setMethod("delivery");
+      if (!isFree) {
+        setTotalPrice(totalPrice + 5);
+      }
+    } else {
+      setMethod("inpost");
+      if (!isFree) {
+        setTotalPrice(totalPrice - 5);
+      }
+    }
+  };
+
   return (
-    <div className="mt-[150px]">
-      <h1>Order</h1>
-      <p>{totalPrice}</p>
+    <div className="mt-[150px] min-h-screen flex flex-col items-center">
+      <h1 className="text-[48px] font-bold text-orange-500  text-center">
+        Order
+      </h1>
+      <p className="text-[32px] font-bold text-orange-500 mt-3 text-center">
+        Total price: {totalPrice} PLN
+      </p>
+      <div className="flex mt-3">
+        <button
+          className={
+            method === "inpost"
+              ? "bg-orange-500 px-6 py-2 m-1 font-bold text-[20px] rounded-xl"
+              : "bg-gray-400 px-6 py-2 m-1 font-bold text-[20px] rounded-xl"
+          }
+          onClick={() => toggleMethod()}
+        >
+          InPost
+        </button>
+        <button
+          className={
+            method === "delivery"
+              ? "bg-orange-500 px-6 py-2 m-1 font-bold text-[20px] rounded-xl"
+              : "bg-gray-400 px-6 py-2 m-1 font-bold text-[20px] rounded-xl"
+          }
+          onClick={() => toggleMethod()}
+        >
+          Delivery {isFree ? "" : "(+ 5 PLN )"}
+        </button>
+      </div>
 
-      <form onSubmit={handleSubmit} autoComplete="off" className="formikForm">
-        <label>
-          Name:
-          <input
-            value={values.name}
-            onChange={handleChange}
-            id="name"
-            type="text"
-            onBlur={handleBlur}
-            className={errors.name && touched.name ? "input-error" : ""}
-          />
-          {errors.name && touched.name && (
-            <p className="error">{errors.name}</p>
-          )}
-        </label>
-        <label>
-          Last Name:
-          <input
-            value={values.lastName}
-            onChange={handleChange}
-            id="lastName"
-            type="text"
-            onBlur={handleBlur}
-            className={errors.lastName && touched.lastName ? "input-error" : ""}
-          />
-          {errors.lastName && touched.lastName && (
-            <p className="error">{errors.lastName}</p>
-          )}
-        </label>
+      {method === "delivery" && (
+        <form
+          onSubmit={handleSubmit}
+          autoComplete="off"
+          className="flex flex-col mt-8 font-semibold "
+        >
+          <div className="flex">
+            <div className="flex flex-col">
+              <input
+                value={values.name}
+                onChange={handleChange}
+                id="name"
+                type="text"
+                onBlur={handleBlur}
+                className="px-5 py-2 my-2 mr-1 text-[18px] outline-none border-2 border-gray-700 rounded-lg"
+                placeholder="Name"
+              />
+              {errors.name && touched.name && (
+                <p className=" text-center text-red-600 font-bold">
+                  {errors.name}
+                </p>
+              )}
+            </div>
 
-        <label>
-          Email:
+            <div className="flex flex-col">
+              <input
+                value={values.lastName}
+                onChange={handleChange}
+                id="lastName"
+                type="text"
+                onBlur={handleBlur}
+                className="px-5 py-2 my-2 ml-1 text-[18px] outline-none border-2 border-gray-700 rounded-lg"
+                placeholder="Last name"
+              />
+              {errors.lastName && touched.lastName && (
+                <p className=" text-center text-red-600 font-bold">
+                  {errors.lastName}
+                </p>
+              )}
+            </div>
+          </div>
+
           <input
             value={values.email}
             onChange={handleChange}
             id="email"
             type="email"
             onBlur={handleBlur}
-            className={errors.email && touched.email ? "input-error" : ""}
+            className="px-5 py-2 my-2 text-[18px] outline-none border-2 border-gray-700 rounded-lg"
+            placeholder="Email address"
           />
           {errors.email && touched.email && (
-            <p className="error">{errors.email}</p>
+            <p className="text-center text-red-600 font-bold">{errors.email}</p>
           )}
-        </label>
 
-        <label>
-          Street:
           <input
             value={values.street}
             onChange={handleChange}
             id="street"
             type="text"
             onBlur={handleBlur}
-            className={errors.street && touched.street ? "input-error" : ""}
+            className="px-5 py-2 my-2 text-[18px] outline-none border-2 border-gray-700 rounded-lg"
+            placeholder="Street"
           />
           {errors.street && touched.street && (
-            <p className="error">{errors.street}</p>
+            <p className=" text-center text-red-600 font-bold">
+              {errors.street}
+            </p>
           )}
-        </label>
 
-        <label>
-          Number:
-          <input
-            value={values.homeNumber}
-            onChange={handleChange}
-            id="homeNumber"
-            type="number"
-            onBlur={handleBlur}
-            className={
-              errors.homeNumber && touched.homeNumber ? "input-error" : ""
-            }
-          />
-          {errors.homeNumber && touched.homeNumber && (
-            <p className="error">{errors.homeNumber}</p>
-          )}
-        </label>
+          <div className="flex ">
+            <div className="flex flex-col">
+              <input
+                value={values.homeNumber}
+                onChange={handleChange}
+                id="homeNumber"
+                type="number"
+                onBlur={handleBlur}
+                className="px-5 py-2 my-2 mr-1 text-[18px] outline-none border-2 border-gray-700 rounded-lg"
+                placeholder="Home number"
+              />
+              {errors.homeNumber && touched.homeNumber && (
+                <p className=" text-center text-red-600 font-bold">
+                  {errors.homeNumber}
+                </p>
+              )}
+            </div>
 
-        <label>
-          Zip code:
-          <input
-            value={values.zipCode}
-            onChange={handleChange}
-            id="zipCode"
-            type="text"
-            onBlur={handleBlur}
-            className={errors.zipCode && touched.zipCode ? "input-error" : ""}
-          />
-          {errors.zipCode && touched.zipCode && (
-            <p className="error">{errors.zipCode}</p>
-          )}
-        </label>
+            <div className="flex flex-col">
+              <input
+                value={values.zipCode}
+                onChange={handleChange}
+                id="zipCode"
+                type="text"
+                onBlur={handleBlur}
+                className="px-5 py-2 my-2 ml-1 text-[18px] outline-none border-2 border-gray-700 rounded-lg"
+                placeholder="Zip code"
+              />
+              {errors.zipCode && touched.zipCode && (
+                <p className=" text-center text-red-600 font-bold">
+                  {errors.zipCode}
+                </p>
+              )}
+            </div>
+          </div>
 
-        <label>
-          Country:
           <input
             value={values.country}
             onChange={handleChange}
             id="country"
             type="text"
             onBlur={handleBlur}
-            className={errors.country && touched.country ? "input-error" : ""}
+            className="px-5 py-2 my-2 text-[18px] outline-none border-2 border-gray-700 rounded-lg"
+            placeholder="Country"
           />
           {errors.country && touched.country && (
-            <p className="error">{errors.country}</p>
+            <p className=" text-center text-red-600 font-bold">
+              {errors.country}
+            </p>
           )}
-        </label>
 
-        <label>
-          Phone Number:
           <input
             value={values.phoneNumber}
             onChange={handleChange}
             id="phoneNumber"
             type="text"
             onBlur={handleBlur}
-            className={
-              errors.phoneNumber && touched.phoneNumber ? "input-error" : ""
-            }
+            className="px-5 py-2 my-2 text-[18px] outline-none border-2 border-gray-700 rounded-lg"
+            placeholder="Phone number"
           />
           {errors.phoneNumber && touched.phoneNumber && (
-            <p className="error">{errors.phoneNumber}</p>
+            <p className=" text-center text-red-600 font-bold">
+              {errors.phoneNumber}
+            </p>
           )}
-        </label>
 
-        <button type="button" onClick={() => showModal()}>
-          siemano
-        </button>
+          <button
+            className="bg-orange-500 px-10 py-2 m-1 mt-4 font-bold text-[20px] rounded-xl w-[45%] mx-auto"
+            type="button"
+            onClick={() => showModal()}
+          >
+            Order
+          </button>
 
-        {modal && (
-          <div>
-            <p>Confirm your order</p>
-            <button disabled={isSubmitting} type="submit">
-              Confirm
-            </button>
-          </div>
-        )}
-      </form>
+          {modal && (
+            <div className="flex flex-col items-center mt-6">
+              <p className="text-[18px] font-semibold">
+                Confirm your order below
+              </p>
+              <button
+                disabled={isSubmitting}
+                type="submit"
+                className="bg-orange-500 px-10 py-2 m-1 font-bold text-[20px] rounded-xl"
+              >
+                Confirm order
+              </button>
+            </div>
+          )}
+        </form>
+      )}
 
-      <form onSubmit={ipHandleSubmit} autoComplete="off">
-        <label>
-          Email:
+      {method === "inpost" && (
+        <form
+          onSubmit={ipHandleSubmit}
+          autoComplete="off"
+          className="flex flex-col mt-12 font-semibold items-center"
+        >
           <input
             value={ipValues.email}
             onChange={ipHandleChange}
             id="email"
             type="email"
             onBlur={ipHandleBlur}
-            className={ipErrors.email && ipTouched.email ? "input-error" : ""}
+            className="px-5 py-2 my-2 text-[18px] outline-none border-2 border-gray-700 rounded-lg"
+            placeholder="Email address"
           />
           {ipErrors.email && ipTouched.email && (
-            <p className="error">{ipErrors.email}</p>
+            <p className="py-1 text-center text-red-600 font-bold">
+              {ipErrors.email}
+            </p>
           )}
-        </label>
 
-        <label>
-          Phone Number:
           <input
             value={ipValues.phoneNumber}
             onChange={ipHandleChange}
             id="phoneNumber"
             type="text"
             onBlur={ipHandleBlur}
-            className={
-              ipErrors.phoneNumber && ipTouched.phoneNumber ? "input-error" : ""
-            }
+            className="px-5 py-2 my-2 text-[18px] outline-none border-2 border-gray-700 rounded-lg"
+            placeholder="Phone number"
           />
           {ipErrors.phoneNumber && ipTouched.phoneNumber && (
-            <p className="error">{ipErrors.phoneNumber}</p>
+            <p className="py-1 text-center text-red-600 font-bold">
+              {ipErrors.phoneNumber}
+            </p>
           )}
-        </label>
 
-        <label>
-          InPost Code:
           <input
             value={ipValues.inpostCode}
             onChange={ipHandleChange}
             id="inpostCode"
             type="text"
             onBlur={ipHandleBlur}
-            className={
-              ipErrors.inpostCode && ipTouched.inpostCode ? "input-error" : ""
-            }
+            className="px-5 py-2 my-2 text-[18px] outline-none border-2 border-gray-700 rounded-lg"
+            placeholder="Inpost code"
           />
           {ipErrors.inpostCode && ipTouched.inpostCode && (
-            <p className="error">{ipErrors.inpostCode}</p>
+            <p className="py-1 text-center text-red-600 font-bold">
+              {ipErrors.inpostCode}
+            </p>
           )}
-        </label>
 
-        <button disabled={ipIsSubmitting} type="submit">
-          Submit
-        </button>
-      </form>
+          <button
+            type="button"
+            className="bg-orange-500 px-10 py-2 m-1 font-bold text-[20px] rounded-xl"
+            onClick={() => setInPostModal(!inPostModal)}
+          >
+            Order
+          </button>
+          {inPostModal && (
+            <div className="flex flex-col items-center mt-6">
+              <p className="text-[18px] font-semibold">
+                Confirm your order below
+              </p>
+              <button
+                disabled={ipIsSubmitting}
+                type="submit"
+                className="bg-orange-500 px-10 py-2 m-1 font-bold text-[20px] rounded-xl"
+              >
+                Confirm order
+              </button>
+            </div>
+          )}
+        </form>
+      )}
     </div>
   );
 };

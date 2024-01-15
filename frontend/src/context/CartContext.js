@@ -8,6 +8,8 @@ export const CartContextProvider = ({ children }) => {
     return storedCart ? JSON.parse(storedCart) : [];
   });
 
+  const [isFree, setIsFree] = useState(false);
+
   const [totalPrice, setTotalPrice] = useState(0);
 
   //przed ustawieniem do ls czy produkt istnieje
@@ -58,10 +60,12 @@ export const CartContextProvider = ({ children }) => {
       return acc;
     }, 0);
 
-    if (total >= 250) {
+    if (total > 250) {
       setTotalPrice(total);
+      setIsFree(true);
     } else {
       setTotalPrice(total + 15);
+      setIsFree(false);
     }
   }, [cart, products]);
 
@@ -161,6 +165,7 @@ export const CartContextProvider = ({ children }) => {
         cart,
         setCart,
         totalPrice,
+        isFree,
         setTotalPrice,
         addToCart,
         addQuantity,

@@ -55,6 +55,9 @@ const Navbar = () => {
                 <Link className="px-2 font-semibold" to="/signup">
                   Sign up
                 </Link>
+                <Link className="px-2 font-semibold" to="/cart">
+                  Cart
+                </Link>
               </div>
             )}
             {user && (
