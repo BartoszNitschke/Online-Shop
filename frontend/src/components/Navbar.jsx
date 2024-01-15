@@ -26,8 +26,8 @@ const Navbar = () => {
         <h1>Free shipping on order over 250 PLN. Easy returns!</h1>
       </div>
       <div className=" w-[100%] mt-10 fixed z-10  h-[70px] bg-white flex justify-center shadow-md shadow-gray-300">
-        <div className="w-[95%] flex justify-between items-center">
-          <div className="text-[18px] py-2">
+        <div className="w-[95%] flex  items-center ">
+          <div className="text-[18px] py-2 flex  w-[30%]">
             <Link className="px-2 font-semibold" to="/products">
               Our products
             </Link>
@@ -39,16 +39,23 @@ const Navbar = () => {
             </Link>
           </div>
 
-          <Link className="text-orange-500 text-[32px] font-bold" to="/">
+          <Link
+            className="text-orange-500 text-[32px] font-bold w-[40%] flex justify-center"
+            to="/"
+          >
             Les vêtements
           </Link>
 
-          <div className="flex items-center">
+          <div className="flex items-center w-[30%] justify-end">
             {!user && (
-              <>
-                <Link to="/login">Login</Link>
-                <Link to="/signup">Sign up</Link>
-              </>
+              <div className="text-[18px] py-2">
+                <Link className="px-2 font-semibold" to="/login">
+                  Login
+                </Link>
+                <Link className="px-2 font-semibold" to="/signup">
+                  Sign up
+                </Link>
+              </div>
             )}
             {user && (
               <>

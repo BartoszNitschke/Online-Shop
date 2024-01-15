@@ -15,37 +15,48 @@ export const Signup = () => {
   };
 
   return (
-    <form className="mt-[200px]" onSubmit={handleSignUp}>
-      <h2>Sign up</h2>
+    <form
+      className="flex flex-col justify-center items-center h-screen"
+      onSubmit={handleSignUp}
+    >
+      <h2 className="text-[48px] font-bold text-orange-500">Sign up</h2>
 
-      <label>Name: </label>
       <input
         type="text"
         onChange={(e) => {
           setName(e.target.value);
         }}
         value={name}
+        placeholder="Username"
+        className="text-[22px] font-semibold px-7 py-2 mt-10 outline-none border-2 border-orange-400 rounded-md"
       />
 
-      <label>Email: </label>
       <input
         type="email"
         onChange={(e) => {
           setEmail(e.target.value);
         }}
         value={email}
+        placeholder="Email address"
+        className="text-[22px] font-semibold px-7 py-2 mt-5 outline-none border-2 border-orange-400 rounded-md"
       />
 
-      <label>Password: </label>
       <input
         type="password"
         onChange={(e) => {
           setPassword(e.target.value);
         }}
         value={password}
+        placeholder="Password"
+        className="text-[22px] font-semibold px-7 py-2 mt-5 outline-none border-2 border-orange-400 rounded-md"
       />
 
-      <button disabled={isLoading}>Sign Up</button>
+      <button
+        className="text-[22px] font-semibold bg-orange-500 rounded-2xl text-white px-16 py-2 mt-6"
+        disabled={isLoading}
+      >
+        Sign Up
+      </button>
       {error && <div>{error}</div>}
     </form>
   );
