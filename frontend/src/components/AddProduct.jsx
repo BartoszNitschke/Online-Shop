@@ -69,93 +69,136 @@ const AddProduct = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h3 className="mt-[200px]">Add Product:</h3>
-      <label>Product name:</label>
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col  items-center h-screen mt-[130px]"
+    >
+      <h3 className="text-[48px] font-semibold text-orange-500">
+        Add Product:
+      </h3>
+
       <input
         type="text"
         onChange={(e) => setName(e.target.value)}
         value={name}
+        placeholder="Product name"
+        className="px-10 py-1 my-1  text-[14px] outline-none border-2 border-gray-700 rounded-xl"
       />
 
-      <label>Product photo:</label>
-      <input type="text" onChange={(e) => setUrl(e.target.value)} value={url} />
+      <input
+        type="text"
+        onChange={(e) => setUrl(e.target.value)}
+        value={url}
+        placeholder="Product url"
+        className="px-10 py-1 my-1  text-[14px] outline-none border-2 border-gray-700 rounded-xl"
+      />
 
-      <label>Product price without delivery:</label>
       <input
         type="number"
         onChange={(e) => setPriceNoDelivery(e.target.value)}
         value={priceNoDelivery}
+        placeholder="Price"
+        className="px-10 py-1 my-1  text-[14px] outline-none border-2 border-gray-700 rounded-xl"
       />
 
-      <label>Product price with delivery:</label>
       <input
         type="number"
         onChange={(e) => setPriceDelivery(e.target.value)}
         value={priceDelivery}
+        placeholder="Price with delivery"
+        className="px-10 py-1 my-1  text-[14px] outline-none border-2 border-gray-700 rounded-xl"
       />
 
-      <label>Product description:</label>
       <input
         type="text"
         onChange={(e) => setDescription(e.target.value)}
         value={description}
+        placeholder="Description"
+        className="px-10 py-1 my-1  text-[14px] outline-none border-2 border-gray-700 rounded-xl"
       />
 
-      <label>Product bio (longer):</label>
-      <input type="text" onChange={(e) => setBio(e.target.value)} value={bio} />
+      <input
+        type="text"
+        onChange={(e) => setBio(e.target.value)}
+        value={bio}
+        placeholder="Bio"
+        className="px-10 py-1 my-1  text-[14px] outline-none border-2 border-gray-700 rounded-xl"
+      />
 
-      <label>Product quantity:</label>
       <input
         type="number"
         onChange={(e) => setQuantity(e.target.value)}
         value={quantity}
+        placeholder="Quantity"
+        className="px-10 py-1 my-1  text-[14px] outline-none border-2 border-gray-700 rounded-xl"
       />
 
-      <label>Men:</label>
-      <input
-        type="checkbox"
-        onChange={(e) => setMen(e.target.checked)}
-        checked={men}
-      />
+      <label className="text-[24px] px-2  mt-5">
+        Men:{" "}
+        <input
+          type="checkbox"
+          onChange={(e) => setMen(e.target.checked)}
+          checked={men}
+          className="w-[20px] h-[20px] ml-2"
+        />
+      </label>
 
-      <label>Women:</label>
-      <input
-        type="checkbox"
-        onChange={(e) => setWomen(e.target.checked)}
-        checked={women}
-      />
+      <label className="text-[24px] px-2 ">
+        Women:
+        <input
+          type="checkbox"
+          onChange={(e) => setWomen(e.target.checked)}
+          checked={women}
+          className="w-[20px] h-[20px] ml-2"
+        />
+      </label>
 
-      <label>T-shirts: :</label>
-      <input
-        type="checkbox"
-        onChange={(e) => setTshirt(e.target.checked)}
-        checked={tshirt}
-      />
+      <label className="text-[24px] px-2 ">
+        T-shirts:
+        <input
+          type="checkbox"
+          onChange={(e) => setTshirt(e.target.checked)}
+          checked={tshirt}
+          className="w-[20px] h-[20px] ml-2"
+        />
+      </label>
 
-      <label>Pants:</label>
-      <input
-        type="checkbox"
-        onChange={(e) => setPants(e.target.checked)}
-        checked={pants}
-      />
+      <label className="text-[24px] px-2 ">
+        Pants:
+        <input
+          type="checkbox"
+          onChange={(e) => setPants(e.target.checked)}
+          checked={pants}
+          className="w-[20px] h-[20px] ml-2"
+        />
+      </label>
 
-      <label>Shoes:</label>
-      <input
-        type="checkbox"
-        onChange={(e) => setShoes(e.target.checked)}
-        checked={shoes}
-      />
+      <label className="text-[24px] px-2 ">
+        Shoes:
+        <input
+          type="checkbox"
+          onChange={(e) => setShoes(e.target.checked)}
+          checked={shoes}
+          className="w-[20px] h-[20px] ml-2"
+        />
+      </label>
 
-      <label>Socks:</label>
-      <input
-        type="checkbox"
-        onChange={(e) => setSocks(e.target.checked)}
-        checked={socks}
-      />
+      <label className="text-[24px] px-2 ">
+        Socks:
+        <input
+          type="checkbox"
+          onChange={(e) => setSocks(e.target.checked)}
+          checked={socks}
+          className="w-[20px] h-[20px] ml-2"
+        />
+      </label>
 
-      <button>Add product</button>
-      {error && <div>{error}</div>}
+      <button className="bg-orange-500 px-10 py-2 m-1 mt-2 font-bold text-[20px] rounded-xl ">
+        Add product
+      </button>
+      {error && (
+        <div className="w-[40%] mt-3 font-semibold text-red-600">{error}</div>
+      )}
     </form>
   );
 };
