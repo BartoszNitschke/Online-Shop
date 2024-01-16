@@ -9,6 +9,7 @@ const Account = () => {
   const [secondPassword, setSecondPassword] = useState("");
   const [deleteAccount, setDeleteAccount] = useState(false);
   const [accountPassword, setAccountPassword] = useState("");
+  const [option, setOption] = useState("password");
   const [error, setError] = useState(null);
   const { logout } = useLogout();
 
@@ -91,86 +92,143 @@ const Account = () => {
     }
   };
 
+  const handleOption = () => {
+    if (option === "password") {
+      setOption("account");
+    } else {
+      setOption("password");
+    }
+  };
+
   return (
-    <div className="mt-[120px]">
-      <h1>Account</h1>
-      <button
-        onClick={() => setChangePassword(!changePassword)}
-        className="border-2 border-black px-4 py-2"
-      >
-        Change Password
-      </button>
-      <button
-        onClick={() => setDeleteAccount(!deleteAccount)}
-        className="border-2 border-black px-4 py-2"
-      >
-        Delete account
-      </button>
-      {changePassword && (
-        <div>
-          <form onSubmit={handlePasswordChange}>
-            <label>
-              Password:
-              <input
-                type="password"
-                value={firstPassword}
-                onChange={(e) => setFirstPassword(e.target.value)}
-              />
-            </label>
-            <label>
-              Confirm password:
-              <input
-                type="password"
-                value={secondPassword}
-                onChange={(e) => setSecondPassword(e.target.value)}
-              />
-            </label>
-            <button className="border-2 border-black px-4 py-2">
-              Change your password
+    <div className=" min-h-screen flex-col items-center flex mt-[120px]">
+      <h1 className="text-[48px] text-orange-500 font-bold pb-10">Account</h1>
+      <div className="flex  w-[90%] ">
+        <div className="flex  w-[50%]">
+          <div className="flex flex-col">
+            <button
+              onClick={() => {
+                setOption("password");
+                setError(null);
+              }}
+              className={
+                option === "password"
+                  ? "bg-orange-500 px-6 py-2 m-1 font-bold text-[18px] rounded-xl"
+                  : "bg-gray-400 px-6 py-2 m-1 font-bold text-[18px] rounded-xl"
+              }
+            >
+              Change Password
             </button>
-          </form>
-          {error && <p>{error}</p>}
-        </div>
-      )}
+            <button
+              onClick={() => {
+                setOption("account");
+                setError(null);
+              }}
+              className={
+                option === "account"
+                  ? "bg-orange-500 px-6 py-2 m-1 font-bold text-[18px] rounded-xl"
+                  : "bg-gray-400 px-6 py-2 m-1 font-bold text-[18px] rounded-xl"
+              }
+            >
+              Delete account
+            </button>
+          </div>
+          {option === "password" && (
+            <div>
+              <form
+                onSubmit={handlePasswordChange}
+                className="flex flex-col items-center px-8"
+              >
+                <input
+                  type="password"
+                  value={firstPassword}
+                  onChange={(e) => setFirstPassword(e.target.value)}
+                  placeholder="New Password"
+                  className="px-4 py-2 my-1 mr-1 text-[16px] outline-none border-2 border-gray-700 rounded-xl"
+                />
 
-      {deleteAccount && (
-        <div>
-          <h1>Type your password to confirm</h1>
-          <form onSubmit={handleDeleteAccount}>
-            <input
-              type="password"
-              value={accountPassword}
-              onChange={(e) => setAccountPassword(e.target.value)}
-            />
-            <button className="border-2 border-black px-4 py-2">Delete</button>
-          </form>
-          {error && <p>{error}</p>}
-        </div>
-      )}
+                <input
+                  type="password"
+                  value={secondPassword}
+                  onChange={(e) => setSecondPassword(e.target.value)}
+                  placeholder="Confirm password"
+                  className="px-4 py-2 my-1 mr-1 text-[16px] outline-none border-2 border-gray-700 rounded-xl"
+                />
+                <button className="bg-orange-500 px-10 py-2 m-1 mt-4 font-bold text-[20px] rounded-xl ">
+                  Change
+                </button>
+              </form>
+              {error && (
+                <p className="text-center py-2 text-red-600 font-semibold">
+                  {error}
+                </p>
+              )}
+            </div>
+          )}
 
-      {user && orders && (
-        <div>
-          {/* roboczo slice 05 */}
-          {orders.slice(0, 5).map((order) => {
-            if (order.userId === user._id) {
-              return (
-                <div>
-                  <p>{order.totalPrice}</p>
-                  {order.products.map((product) => {
-                    return (
-                      <div>
-                        <p>{product.name}</p>
-                        <p>{product.priceNoDelivery}</p>
-                        <p>{product.quantity}</p>
-                      </div>
-                    );
-                  })}
-                </div>
-              );
-            }
-          })}
+          {option === "account" && (
+            <div className="px-8">
+              <h1 className="text-orange-500 font-bold text-[18px]">
+                Type your password to confirm
+              </h1>
+              <form
+                onSubmit={handleDeleteAccount}
+                className="flex flex-col items-center"
+              >
+                <input
+                  type="password"
+                  value={accountPassword}
+                  onChange={(e) => setAccountPassword(e.target.value)}
+                  className="px-4 py-2 my-2 mr-1 text-[16px] outline-none border-2 border-gray-700 rounded-xl"
+                />
+                <button className="bg-orange-500 px-10 py-2 m-1 mt-2 font-bold text-[20px] rounded-xl ">
+                  Delete
+                </button>
+              </form>
+              {error && (
+                <p className="text-center py-2 text-red-600 font-semibold">
+                  {error}
+                </p>
+              )}
+            </div>
+          )}
         </div>
-      )}
+
+        {user && orders && (
+          <div className="w-[50%] flex items-center flex-col">
+            <h1 className="text-[30px] text-orange-500 font-semibold">
+              Your last orders
+            </h1>
+            {/* roboczo slice 05 */}
+            {orders.slice(0, 5).map((order) => {
+              if (order.userId === user._id) {
+                return (
+                  <div className="flex flex-col items-center py-4 border-b-2 border-orange-600">
+                    {order.products.map((product) => {
+                      return (
+                        <div className="flex items-center">
+                          <p className="text-[18px] font-semibold px-3">
+                            {product.name}
+                          </p>
+                          <p className="font-semibold text-orange-500 px-1">
+                            {product.priceNoDelivery} PLN
+                          </p>
+                          <p className="font-semibold px-1">
+                            X {product.quantity}
+                          </p>
+                        </div>
+                      );
+                    })}
+                    <p className="text-[18px] font-semibold text-orange-500">
+                      Total price: {order.totalPrice} PLN
+                    </p>
+                  </div>
+                );
+              }
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
