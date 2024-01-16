@@ -47,11 +47,7 @@ const Home = () => {
             )}
             {products &&
               products.slice(0, 5).map((product) => {
-                return (
-                  <Link to={"/product/" + product._id}>
-                    <Product key={product._id} product={product} />
-                  </Link>
-                );
+                return <Product key={product._id} product={product} />;
               })}
           </div>
         </div>

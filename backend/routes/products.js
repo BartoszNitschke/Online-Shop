@@ -9,6 +9,7 @@ const {
   getProductsByRating,
   getMenProducts,
   getWomenProducts,
+  updateProduct,
 } = require("../controllers/productController");
 
 const router = express.Router();
@@ -30,5 +31,7 @@ router.delete("/:id", deleteProduct);
 router.patch("/:id", addRating);
 
 router.patch("/deleteRating/:id", deleteRating);
+
+router.patch("/", updateProduct);
 
 module.exports = router;

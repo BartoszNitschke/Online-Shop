@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FaCartPlus, FaSearchPlus } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { CartContext } from "../context/CartContext";
 
 const Product = ({ product }) => {
+  const { addToCart } = useContext(CartContext);
+
   return (
     <div className="flex flex-col max-w-[300px]  items-center  rounded-lg m-3">
       <img
@@ -26,7 +29,10 @@ const Product = ({ product }) => {
       </div>
       <div className="absolute flex justify-center items-center h-[450px] w-[300px] opacity-0 hover:opacity-100 transition-opacity bg-black-rgba">
         <button>
-          <FaCartPlus className="text-[72px] text-orange-500 px-3 hover:text-gray-300" />
+          <FaCartPlus
+            onClick={() => addToCart(product)}
+            className="text-[72px] text-orange-500 px-3 hover:text-gray-300"
+          />
         </button>
         <Link to={"/product/" + product._id}>
           <FaSearchPlus className="text-[72px] text-orange-500 px-3 hover:text-gray-300" />

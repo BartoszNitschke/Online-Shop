@@ -10,6 +10,9 @@ import ProductDetails from "./components/ProductDetails";
 import OurProducts from "./pages/OurProducts";
 import Men from "./pages/MenProducts";
 import Women from "./pages/WomenProducts";
+import Cart from "./pages/Cart";
+import Order from "./pages/Order";
+import Account from "./pages/Account";
 
 function App() {
   const { user } = useUserContext();
@@ -32,6 +35,12 @@ function App() {
               path="/signup"
               element={!user ? <Signup /> : <Navigate to="/" />}
             />
+            <Route
+              path="/account"
+              element={!user ? <Navigate to="/" /> : <Account />}
+            />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/order" element={<Order />} />
             <Route path="/adminpanel" element={<AdminPanel />} />
             <Route path="/product/:id" element={<ProductDetails />} />
           </Routes>
