@@ -309,8 +309,13 @@ const ProductDetails = () => {
             </div>
           </div>
         )}
+        {product && product._id && !user && (
+          <p className="mt-8 py-8 text-[36px] text-orange-500 font-semibold">
+            Log In to share your review
+          </p>
+        )}
 
-        {product && product._id && (
+        {product && product._id && user && (
           <div className="flex items-center pt-8 w-[70%] justify-evenly">
             <form
               className="flex flex-col items-center"

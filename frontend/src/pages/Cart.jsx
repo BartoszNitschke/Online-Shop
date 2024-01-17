@@ -25,7 +25,7 @@ const Cart = () => {
   }
 
   return (
-    <div className="mt-[150px] flex flex-col h-screen w-[90%] mx-auto">
+    <div className="mt-[150px] flex flex-col h-screen w-[90%] mx-auto animate fadeDown">
       <h1 className="text-[48px] font-bold text-orange-500 pb-8 text-center">
         Cart
       </h1>

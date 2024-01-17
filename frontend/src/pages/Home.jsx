@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import Product from "../components/Product";
 import { Link } from "react-router-dom";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
@@ -6,7 +6,7 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 const Home = () => {
   const [products, setProducts] = useState(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const fetchProducts = async () => {
       const res = await fetch("/api/products/rating");
       const json = await res.json();
@@ -17,7 +17,7 @@ const Home = () => {
     };
 
     fetchProducts();
-  }, [products]);
+  }, []);
 
   return (
     <div>

@@ -34,7 +34,7 @@ userSchema.statics.signup = async function (email, name, password) {
   }
 
   if (!validator.isStrongPassword(password)) {
-    throw Error("Create a stronger password!");
+    throw Error("Password must contain a number and special sign");
   }
 
   const exists = await this.findOne({ email });

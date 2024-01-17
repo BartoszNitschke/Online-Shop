@@ -1,7 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { CartContext } from "../context/CartContext";
 import { useUserContext } from "../hooks/useUserContext";
 import { useFormik } from "formik";
+import { redirect } from "react-router-dom";
+
 import * as yup from "yup";
 
 const phoneRegex = /^\+?\d{9,15}$/;
@@ -36,6 +38,7 @@ const Order = () => {
   const [inPostModal, setInPostModal] = useState(false);
   const [method, setMethod] = useState("inpost");
   const { user } = useUserContext();
+  const [redirect, setRedirect] = useState(false);
 
   const showModal = () => {
     setModal(!modal);
@@ -98,6 +101,11 @@ const Order = () => {
         actions.resetForm();
         clearCart();
         showModal();
+        setRedirect(true);
+
+        if (redirect) {
+          return redirect("/");
+        }
       }
     }
   };
@@ -158,7 +166,7 @@ const Order = () => {
   };
 
   return (
-    <div className="mt-[150px] min-h-screen flex flex-col items-center">
+    <div className="mt-[150px] min-h-screen flex flex-col items-center animate fadeDown">
       <h1 className="text-[48px] font-bold text-orange-500  text-center">
         Order
       </h1>

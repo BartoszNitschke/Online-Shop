@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Product from "../components/Product";
 import { Range } from "react-range";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
@@ -61,11 +61,14 @@ const OurProducts = () => {
     setProducts(sortedProducts);
   };
 
-  const showMoreProducts = () => {
-    const remainingProducts = products.length - shownProducts;
-    const nextProducts = Math.min(remainingProducts, 12);
-    setShownProducts((prev) => prev + nextProducts);
-  };
+  const showMoreProducts = useMemo(
+    () => () => {
+      const remainingProducts = products.length - shownProducts;
+      const nextProducts = Math.min(remainingProducts, 12);
+      setShownProducts((prev) => prev + nextProducts);
+    },
+    [products, shownProducts]
+  );
 
   if (!products) {
     return (
