@@ -102,7 +102,7 @@ const Account = () => {
   };
 
   return (
-    <div className=" min-h-screen flex-col items-center flex mt-[120px]">
+    <div className=" min-h-screen flex-col items-center flex mt-[120px] animate fadeDown">
       <h1 className="text-[48px] text-orange-500 font-bold pb-10">Account</h1>
       <div className="flex  w-[90%] ">
         <div className="flex  w-[50%]">

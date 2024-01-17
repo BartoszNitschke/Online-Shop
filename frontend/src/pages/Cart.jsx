@@ -17,8 +17,8 @@ const Cart = () => {
   if (cart.length < 1) {
     return (
       <div className="h-screen w-full justify-center items-center flex">
-        <h1 className="text-[48px] font-bold text-orange-500">
-          Add items to your cart
+        <h1 className="text-[48px] font-bold text-orange-500 after:content-['cart'] animate fadeDown">
+          Add items to your{" "}
         </h1>
       </div>
     );
