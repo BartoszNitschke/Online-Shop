@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useUserContext } from "../hooks/useUserContext";
 import { useLogout } from "../hooks/useLogout";
+import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 
 const Account = () => {
   const [orders, setOrders] = useState();
@@ -221,6 +222,11 @@ const Account = () => {
                     })}
                     <p className="text-[18px] font-semibold text-orange-500">
                       Total price: {order.totalPrice} PLN
+                    </p>
+                    <p className="text-[18px] font-semibold text-orange-500">
+                      {formatDistanceToNow(new Date(order.createdAt), {
+                        addSuffix: true,
+                      })}
                     </p>
                   </div>
                 );

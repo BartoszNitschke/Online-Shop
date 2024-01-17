@@ -2,7 +2,7 @@ const Order = require("../models/Order");
 const mongoose = require("mongoose");
 
 const getOrders = async (req, res) => {
-  const orders = await Order.find({});
+  const orders = await Order.find({}).sort({ createdAt: -1 });
 
   res.status(200).json(orders);
 };
