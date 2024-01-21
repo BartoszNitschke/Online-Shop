@@ -26,3 +26,7 @@
 .fadeDown {
   animation: fadeDown 1.3s ease-out;
 }
+
+.delivery::after {
+  content: "PLN with delivery";
+}

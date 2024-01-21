@@ -267,19 +267,17 @@ const ProductDetails = () => {
             />
             <div className="max-w-[500px] mt-[200px]">
               <div className="flex  text-[24px] font-semibold text-center justify-evenly py-2">
-                <p>
+                <p className="after:content-['PLN']">
                   <span className="text-orange-500 font-bold">
                     {product.priceNoDelivery}
                   </span>{" "}
-                  PLN
                 </p>
-                <p>
+                <p className="delivery">
                   {" "}
                   From{" "}
                   <span className="text-orange-500 font-bold">
                     {product.priceDelivery}
                   </span>{" "}
-                  PLN with Delivery
                 </p>
               </div>
 
