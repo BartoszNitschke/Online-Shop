@@ -48,7 +48,7 @@ const Account = () => {
       const json = await res.json();
 
       if (!res.ok) {
-        throw Error("Error while changing your password");
+        setError(json.error);
       }
       if (res.ok) {
         console.log("Your password has been changed!");
@@ -83,7 +83,7 @@ const Account = () => {
     const json = await res.json();
 
     if (!res.ok) {
-      throw Error("Error deleting your account");
+      setError(json.error);
     }
     if (res.ok) {
       setError(null);

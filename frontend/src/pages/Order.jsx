@@ -8,10 +8,12 @@ import * as yup from "yup";
 
 const phoneRegex = /^\+?\d{9,15}$/;
 
+const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$/;
+
 const basicSchema = yup.object().shape({
   name: yup.string().required().min(4).max(50),
   lastName: yup.string().required().min(2).max(50),
-  email: yup.string().email().required(),
+  email: yup.string().email().required().matches(emailRegex, "Invalid email"),
   street: yup.string().required().min(3).max(30),
   homeNumber: yup.number().required().min(1),
   zipCode: yup.string().required().min(5).max(6),
@@ -23,7 +25,7 @@ const basicSchema = yup.object().shape({
 });
 
 const inPostSchema = yup.object().shape({
-  email: yup.string().email().required(),
+  email: yup.string().email().required().matches(emailRegex, "Invalid email"),
   phoneNumber: yup
     .string()
     .required()
@@ -39,6 +41,7 @@ const Order = () => {
   const [method, setMethod] = useState("inpost");
   const { user } = useUserContext();
   const [redirect, setRedirect] = useState(false);
+  const [error, setError] = useState(null);
 
   const showModal = () => {
     setModal(!modal);
@@ -78,10 +81,11 @@ const Order = () => {
     });
 
     if (!patchRes.ok) {
-      throw Error("couldnt add an order");
+      setError("Couldn't add an order");
     }
 
     if (patchRes.ok) {
+      setError(null);
       const res = await fetch("/api/orders", {
         method: "POST",
         body: JSON.stringify(product),
@@ -93,7 +97,7 @@ const Order = () => {
       const json = await res.json();
 
       if (!res.ok) {
-        throw Error("couldnt add new order request");
+        setError("Couldn't add an order");
       }
 
       if (res.ok) {
@@ -101,6 +105,7 @@ const Order = () => {
         actions.resetForm();
         clearCart();
         showModal();
+        setError(null);
         setRedirect(true);
 
         if (redirect) {
@@ -354,6 +359,9 @@ const Order = () => {
               </button>
             </div>
           )}
+          {error && (
+            <p className="text-center text-[20px] mt-4 py-2 text-red-600 font-semibold"></p>
+          )}
         </form>
       )}
 
@@ -428,6 +436,11 @@ const Order = () => {
                 Confirm order
               </button>
             </div>
+          )}
+          {error && (
+            <p className="text-center text-[20px] mt-4 py-2 text-red-600 font-semibold">
+              {error}
+            </p>
           )}
         </form>
       )}

@@ -5,6 +5,7 @@ import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { MdDelete, MdStarRate } from "react-icons/md";
 import { CartContext } from "../context/CartContext";
+import { debounce } from "lodash";
 
 const ProductDetails = () => {
   const { user } = useUserContext();
@@ -23,7 +24,7 @@ const ProductDetails = () => {
 
   //blad gdy nie ma productu o tym id
 
-  useEffect(() => {
+  const fetchProduct = debounce(() => {
     const fetchProduct = async () => {
       const res = await fetch("/api/products/" + id);
       const json = await res.json();
@@ -34,7 +35,11 @@ const ProductDetails = () => {
     };
 
     fetchProduct();
-  }, [product, id]);
+  }, 10000);
+
+  useEffect(() => {
+    fetchProduct();
+  }, [product]);
 
   const handleAddToCart = () => {
     const inputValue = parseInt(quantityRef.current.value, 10);
@@ -48,6 +53,16 @@ const ProductDetails = () => {
   };
 
   useEffect(() => {
+    if (product && quantity > product.quantity) {
+      setError("Product not available");
+    }
+
+    if (product && quantity <= product.quantity) {
+      setError(null);
+    }
+  }, [quantity]);
+
+  const fetchReviews = debounce(() => {
     const fetchReviews = async () => {
       const res = await fetch("/api/reviews");
       const json = await res.json();
@@ -57,6 +72,10 @@ const ProductDetails = () => {
       }
     };
 
+    fetchReviews();
+  }, 10000);
+
+  useEffect(() => {
     fetchReviews();
   }, [reviews]);
 
@@ -71,7 +90,7 @@ const ProductDetails = () => {
     };
 
     fetchRatings();
-  }, [usersRating]);
+  }, []);
 
   const handleReview = async (e) => {
     e.preventDefault();
@@ -239,14 +258,14 @@ const ProductDetails = () => {
           </p>
         )}
         {product && (
-          <div className="flex justify-evenly items-center w-[70%]">
+          <div className="flex justify-evenly  w-[70%]">
             <img
               src={product.url}
               alt={product.name}
               style={{ width: "450px" }}
               className="rounded-xl shadow-black shadow-xl"
             />
-            <div className="max-w-[500px]">
+            <div className="max-w-[500px] mt-[200px]">
               <div className="flex  text-[24px] font-semibold text-center justify-evenly py-2">
                 <p>
                   <span className="text-orange-500 font-bold">
@@ -284,6 +303,7 @@ const ProductDetails = () => {
                   stock
                 </p>
               </div>
+
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -306,6 +326,11 @@ const ProductDetails = () => {
                   Add to cart
                 </button>
               </form>
+              {error && (
+                <p className="text-center text-[20px] mt-4 py-2 text-red-600 font-semibold">
+                  {error}
+                </p>
+              )}
             </div>
           </div>
         )}

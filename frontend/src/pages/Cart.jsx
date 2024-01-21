@@ -14,6 +14,14 @@ const Cart = () => {
     removeFromCart,
   } = useContext(CartContext);
 
+  const [productUnavailable, setProductUnavailable] = useState(false);
+  useEffect(() => {
+    const productNotAvailable = cart.find(
+      (product) => product.quantity > product.quantityInStore
+    );
+    setProductUnavailable(!!productNotAvailable);
+  }, [cart]);
+
   if (cart.length < 1) {
     return (
       <div className="h-screen w-full justify-center items-center flex">
@@ -70,6 +78,11 @@ const Cart = () => {
               <p className="text-[18px] font-semibold">
                 Total : {product.quantity * product.priceNoDelivery}
               </p>
+              {product.quantity > product.quantityInStore && (
+                <p className="text-center text-[20px] mt-4 py-2 text-red-600 font-semibold">
+                  Product not available
+                </p>
+              )}
             </div>
           </div>
         );
@@ -89,7 +102,14 @@ const Cart = () => {
         </p>
 
         <Link to="/order">
-          <button className="text-[22px] font-semibold bg-orange-500 rounded-2xl text-white px-16 py-2 mt-6 hover:bg-orange-400 hover:text-gray-700">
+          <button
+            className={
+              !productUnavailable
+                ? "text-[22px] font-semibold bg-orange-500 rounded-2xl text-white px-16 py-2 mt-6 hover:bg-orange-400 hover:text-gray-700"
+                : "text-[22px] font-semibold bg-gray-400 rounded-2xl text-black px-16 py-2 mt-6"
+            }
+            disabled={productUnavailable}
+          >
             Complete order
           </button>
         </Link>

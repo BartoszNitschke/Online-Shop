@@ -2,6 +2,7 @@ const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
+const validator = require("validator");
 
 const createToken = (id) => {
   return jwt.sign({ _id: id }, process.env.SECRET, { expiresIn: "7d" });
@@ -69,6 +70,11 @@ const changePassword = async (req, res) => {
   const token = authorization.split(" ")[1];
   const { newPassword } = req.body;
   console.log("1 proba", newPassword);
+  if (!validator.isStrongPassword(newPassword)) {
+    return res
+      .status(400)
+      .json({ error: "Password must contain a number and special sign" });
+  }
 
   try {
     const _id = jwt.verify(token, process.env.SECRET);
@@ -130,7 +136,7 @@ const deleteAccount = async (req, res) => {
     res.status(200).json(user);
   } catch (error) {
     console.log(error);
-    res.status(401).json({ error: "Request is not authorized" });
+    res.status(401).json({ error: "Incorrect password" });
   }
 };
 

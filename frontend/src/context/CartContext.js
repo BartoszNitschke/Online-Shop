@@ -70,7 +70,7 @@ export const CartContextProvider = ({ children }) => {
   }, [cart, products]);
 
   const addToCart = (product) => {
-    const { _id, name, priceNoDelivery, url } = product;
+    const { _id, name, priceNoDelivery, url, quantity } = product;
 
     const isProductInCart = cart.some((item) => item._id === _id);
 
@@ -81,6 +81,7 @@ export const CartContextProvider = ({ children }) => {
         priceNoDelivery,
         url,
         quantity: 1,
+        quantityInStore: quantity,
       };
 
       setCart((prevCart) => [...prevCart, newProduct]);
