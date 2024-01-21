@@ -3,8 +3,17 @@ import Product from "../components/Product";
 import { Link } from "react-router-dom";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
-const Home = () => {
-  const [products, setProducts] = useState(null);
+interface ProductType {
+  _id: string;
+  name: string;
+  description: string;
+  priceNoDelivery: number;
+  quantity: number;
+  url: string;
+}
+
+const HomeSection: React.FC = () => {
+  const [products, setProducts] = useState<ProductType[] | null>(null);
 
   useLayoutEffect(() => {
     const fetchProducts = async () => {
@@ -58,4 +67,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomeSection;
