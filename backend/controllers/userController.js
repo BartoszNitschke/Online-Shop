@@ -2,6 +2,7 @@ const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
+const validator = require("validator");
 
 const createToken = (id) => {
   return jwt.sign({ _id: id }, process.env.SECRET, { expiresIn: "7d" });
@@ -12,7 +13,6 @@ const loginUser = async (req, res) => {
 
   try {
     const user = await User.login(email, password);
-    console.log("2nd", user.name);
 
     const token = createToken(user._id);
     if (token) {
@@ -68,17 +68,19 @@ const changePassword = async (req, res) => {
 
   const token = authorization.split(" ")[1];
   const { newPassword } = req.body;
-  console.log("1 proba", newPassword);
+  if (!validator.isStrongPassword(newPassword)) {
+    return res
+      .status(400)
+      .json({ error: "Password must contain a number and special sign" });
+  }
 
   try {
     const _id = jwt.verify(token, process.env.SECRET);
-    console.log(_id);
 
     const userExists = await User.exists({ _id });
     if (!userExists) {
       return res.status(404).json({ error: "User not found" });
     }
-    console.log("2 proba", newPassword);
     const salt = await bcrypt.genSalt(12);
     const hash = await bcrypt.hash(newPassword, salt);
 
@@ -130,7 +132,7 @@ const deleteAccount = async (req, res) => {
     res.status(200).json(user);
   } catch (error) {
     console.log(error);
-    res.status(401).json({ error: "Request is not authorized" });
+    res.status(401).json({ error: "Incorrect password" });
   }
 };
 

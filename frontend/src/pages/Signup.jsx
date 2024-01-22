@@ -11,7 +11,6 @@ export const Signup = () => {
     e.preventDefault();
 
     await signup(email, name, password);
-    console.log(email, name, password);
   };
 
   return (
@@ -57,7 +56,11 @@ export const Signup = () => {
       >
         Sign Up
       </button>
-      {error && <div>{error}</div>}
+      {error && (
+        <div className="text-red-600 font-semibold text-[18px] mt-3">
+          {error}
+        </div>
+      )}
     </form>
   );
 };

@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Product from "../components/Product";
 import { Range } from "react-range";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { FaArrowUp, FaArrowDown } from "react-icons/fa";
 
 const OurProducts = () => {
-  const [val, setVal] = useState([20, 160]);
+  const [val, setVal] = useState([20, 200]);
   const [products, setProducts] = useState(null);
   const [filter, setFilter] = useState(null);
   const [sortDirection, setSortDirection] = useState({
@@ -14,6 +14,7 @@ const OurProducts = () => {
     createdAt: null,
     rating: null,
   });
+  const [shownProducts, setShownProducts] = useState(12);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -52,13 +53,21 @@ const OurProducts = () => {
         second = new Date(b[filteredProp]);
       }
 
-      console.log("siemka", a[filteredProp]);
       const comparison = first - second;
       return newSortDirection ? comparison : -comparison;
     });
 
     setProducts(sortedProducts);
   };
+
+  const showMoreProducts = useMemo(
+    () => () => {
+      const remainingProducts = products.length - shownProducts;
+      const nextProducts = Math.min(remainingProducts, 12);
+      setShownProducts((prev) => prev + nextProducts);
+    },
+    [products, shownProducts]
+  );
 
   if (!products) {
     return (
@@ -117,6 +126,7 @@ const OurProducts = () => {
               <button
                 onClick={() => {
                   setFilter(null);
+                  setShownProducts(12);
                 }}
                 className={
                   filter === null
@@ -129,6 +139,7 @@ const OurProducts = () => {
               <button
                 onClick={() => {
                   setFilter("men");
+                  setShownProducts(12);
                 }}
                 className={
                   filter === "men"
@@ -141,6 +152,7 @@ const OurProducts = () => {
               <button
                 onClick={() => {
                   setFilter("women");
+                  setShownProducts(12);
                 }}
                 className={
                   filter === "women"
@@ -153,6 +165,7 @@ const OurProducts = () => {
               <button
                 onClick={() => {
                   setFilter("tshirt");
+                  setShownProducts(12);
                 }}
                 className={
                   filter === "tshirt"
@@ -165,6 +178,7 @@ const OurProducts = () => {
               <button
                 onClick={() => {
                   setFilter("pants");
+                  setShownProducts(12);
                 }}
                 className={
                   filter === "pants"
@@ -177,6 +191,7 @@ const OurProducts = () => {
               <button
                 onClick={() => {
                   setFilter("shoes");
+                  setShownProducts(12);
                 }}
                 className={
                   filter === "shoes"
@@ -189,6 +204,7 @@ const OurProducts = () => {
               <button
                 onClick={() => {
                   setFilter("socks");
+                  setShownProducts(12);
                 }}
                 className={
                   filter === "socks"
@@ -261,23 +277,34 @@ const OurProducts = () => {
           </div>
         </div>
 
-        <div className="flex flex-wrap justify-center w-[83%]">
-          {products &&
-            products.map((product) => {
-              if (
-                product.priceNoDelivery >= val[0] &&
-                product.priceNoDelivery <= val[1] &&
-                product[filter]
-              ) {
-                return <Product key={product._id} product={product} />;
-              } else if (
-                product.priceNoDelivery >= val[0] &&
-                product.priceNoDelivery <= val[1] &&
-                filter === null
-              ) {
-                return <Product key={product._id} product={product} />;
-              }
-            })}
+        <div className="flex flex-col items-center w-[83%] pb-16">
+          <div className="flex flex-wrap justify-center ">
+            {products &&
+              products.slice(0, shownProducts).map((product) => {
+                if (
+                  product.priceNoDelivery >= val[0] &&
+                  product.priceNoDelivery <= val[1] &&
+                  product[filter]
+                ) {
+                  return <Product key={product._id} product={product} />;
+                } else if (
+                  product.priceNoDelivery >= val[0] &&
+                  product.priceNoDelivery <= val[1] &&
+                  filter === null
+                ) {
+                  return <Product key={product._id} product={product} />;
+                } else return <div key={product._id}></div>;
+              })}
+          </div>
+
+          {shownProducts < products.length && (
+            <button
+              onClick={showMoreProducts}
+              className="bg-orange-500 px-9 py-3 m-4 font-bold text-[24px] rounded-xl"
+            >
+              Show more
+            </button>
+          )}
         </div>
       </div>
     </div>

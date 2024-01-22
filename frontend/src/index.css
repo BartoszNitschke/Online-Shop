@@ -11,3 +11,22 @@
     @apply font-['Raleway'];
   }
 }
+
+@keyframes fadeDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-300px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fadeDown {
+  animation: fadeDown 1.3s ease-out;
+}
+
+.delivery::after {
+  content: "PLN with delivery";
+}

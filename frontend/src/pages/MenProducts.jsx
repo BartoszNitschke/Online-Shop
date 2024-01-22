@@ -47,7 +47,6 @@ const MenProducts = () => {
         second = new Date(b[filteredProp]);
       }
 
-      console.log("siemka", a[filteredProp]);
       const comparison = first - second;
       return newSortDirection ? comparison : -comparison;
     });
@@ -248,7 +247,7 @@ const MenProducts = () => {
                 filter === null
               ) {
                 return <Product key={product._id} product={product} />;
-              }
+              } else return <div key={product._id}></div>;
             })}
         </div>
       </div>

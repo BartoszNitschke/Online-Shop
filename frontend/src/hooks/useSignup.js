@@ -24,7 +24,6 @@ export const useSignup = () => {
     }
 
     if (res.ok) {
-      console.log("siema to ja", JSON.stringify(json));
       localStorage.setItem("user", JSON.stringify(json));
       const user = JSON.parse(localStorage.getItem("user"));
 
@@ -41,7 +40,6 @@ export const useSignup = () => {
 
       if (userDetailsRes.ok) {
         dispatch({ type: "LOGIN", payload: detailsJSON });
-        console.log("detale usera: ", detailsJSON);
         setIsLoading(false);
       }
     }

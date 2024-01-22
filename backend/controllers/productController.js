@@ -82,6 +82,23 @@ const addProduct = async (req, res) => {
   } = req.body;
 
   try {
+    if (!name.trim() || !url.trim() || !description.trim() || !bio.trim()) {
+      throw new Error("Name, url, description, and bio cannot be empty");
+    }
+
+    if (
+      priceNoDelivery < 0 ||
+      priceDelivery < 0 ||
+      isNaN(priceNoDelivery) ||
+      isNaN(priceDelivery)
+    ) {
+      throw new Error("Prices cannot be negative");
+    }
+
+    if (quantity < 0 || quantity % 1 !== 0 || isNaN(quantity)) {
+      throw new Error("Invalid quantity");
+    }
+
     const product = await Product.create({
       name,
       url,
@@ -97,6 +114,7 @@ const addProduct = async (req, res) => {
       shoes,
       socks,
     });
+
     res.status(200).json(product);
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -126,6 +144,19 @@ const addRating = async (req, res) => {
     return res.status(404).json({ error: "No product with this id" });
   }
 
+  const newRating = req.body.rating !== undefined ? req.body.rating : 0;
+
+  if (
+    isNaN(newRating) ||
+    newRating < 1 ||
+    newRating > 5 ||
+    newRating % 1 !== 0
+  ) {
+    return res
+      .status(400)
+      .json({ error: "Invalid rating. Must be a number between 1 and 5." });
+  }
+
   const existingProduct = await Product.findById(id);
 
   const existingRatingSum = existingProduct
@@ -135,7 +166,6 @@ const addRating = async (req, res) => {
     ? existingProduct.ratingCount || 0
     : 0;
 
-  const newRating = req.body.rating !== undefined ? req.body.rating : 0;
   const newRatingSum = existingRatingSum + newRating;
   const newRatingCount = existingRatingCount + 1;
   const newAverageRating = newRatingSum / newRatingCount;
@@ -148,7 +178,7 @@ const addRating = async (req, res) => {
       ratingCount: newRatingCount,
       rating: newAverageRating,
     },
-    { new: true, upsert: true, runValidators: true }
+    { new: true, runValidators: true }
   );
 
   if (!product) {
@@ -165,6 +195,19 @@ const deleteRating = async (req, res) => {
     return res.status(404).json({ error: "No product with this id" });
   }
 
+  const newRating = req.body.rating !== undefined ? req.body.rating : 0;
+
+  if (
+    isNaN(newRating) ||
+    newRating < 1 ||
+    newRating > 5 ||
+    newRating % 1 !== 0
+  ) {
+    return res
+      .status(400)
+      .json({ error: "Invalid rating. Must be a number between 1 and 5." });
+  }
+
   const existingProduct = await Product.findById(id);
 
   const existingRatingSum = existingProduct
@@ -174,7 +217,6 @@ const deleteRating = async (req, res) => {
     ? existingProduct.ratingCount || 0
     : 0;
 
-  const newRating = req.body.rating !== undefined ? req.body.rating : 0;
   const newRatingSum = existingRatingSum - newRating;
   const newRatingCount = existingRatingCount - 1;
   let newAverageRating = 0;
@@ -190,7 +232,7 @@ const deleteRating = async (req, res) => {
       ratingCount: newRatingCount,
       rating: newAverageRating,
     },
-    { new: true, upsert: true, runValidators: true }
+    { new: true, runValidators: true }
   );
 
   if (!product) {
@@ -201,10 +243,8 @@ const deleteRating = async (req, res) => {
 };
 
 const updateProduct = async (req, res) => {
-  console.log("xdddddd");
   try {
     const { products } = req.body;
-    console.log(products);
 
     const updatePromises = products.map(async ({ _id, quantity }) => {
       if (!mongoose.Types.ObjectId.isValid(_id)) {
@@ -216,6 +256,12 @@ const updateProduct = async (req, res) => {
         throw new Error("Product not found");
       }
 
+      if (!Number.isInteger(quantity) || quantity <= 0) {
+        throw new Error(
+          "Invalid quantity. Quantity must be a positive integer"
+        );
+      }
+
       const updatedQuantity = product.quantity - quantity;
 
       if (updatedQuantity < 0) {
@@ -225,12 +271,20 @@ const updateProduct = async (req, res) => {
       return Product.updateOne({ _id }, { $inc: { quantity: -quantity } });
     });
 
-    await Promise.all(updatePromises);
+    const results = await Promise.allSettled(updatePromises);
+
+    const errors = results
+      .filter((result) => result.status === "rejected")
+      .map((result) => result.reason.message);
+
+    if (errors.length > 0) {
+      throw new Error(errors.join(". "));
+    }
 
     res.status(200).json({ message: "Products updated successfully" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(400).json({ error: error.message });
   }
 };
 

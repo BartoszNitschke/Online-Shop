@@ -1,6 +1,8 @@
+import { useContext } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useUserContext } from "./hooks/useUserContext";
-import Home from "./pages/Home";
+import { CartContext } from "./context/CartContext";
+import HomeSection from "./pages/HomeSection";
 import Navbar from "./components/Navbar";
 import { Login } from "./pages/Login";
 import { Signup } from "./pages/Signup";
@@ -16,6 +18,7 @@ import Account from "./pages/Account";
 
 function App() {
   const { user } = useUserContext();
+  const { cart } = useContext(CartContext);
 
   return (
     <div className="App">
@@ -23,7 +26,7 @@ function App() {
         <Navbar />
         <div>
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<HomeSection />} />
             <Route path="/products" element={<OurProducts />} />
             <Route path="/men" element={<Men />} />
             <Route path="/women" element={<Women />} />
@@ -40,7 +43,10 @@ function App() {
               element={!user ? <Navigate to="/" /> : <Account />}
             />
             <Route path="/cart" element={<Cart />} />
-            <Route path="/order" element={<Order />} />
+            <Route
+              path="/order"
+              element={cart.length === 0 ? <Navigate to="/" /> : <Order />}
+            />
             <Route path="/adminpanel" element={<AdminPanel />} />
             <Route path="/product/:id" element={<ProductDetails />} />
           </Routes>

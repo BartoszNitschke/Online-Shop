@@ -1,15 +1,18 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { CartContext } from "../context/CartContext";
 import { useUserContext } from "../hooks/useUserContext";
 import { useFormik } from "formik";
+
 import * as yup from "yup";
 
 const phoneRegex = /^\+?\d{9,15}$/;
 
+const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$/;
+
 const basicSchema = yup.object().shape({
   name: yup.string().required().min(4).max(50),
   lastName: yup.string().required().min(2).max(50),
-  email: yup.string().email().required(),
+  email: yup.string().email().required().matches(emailRegex, "Invalid email"),
   street: yup.string().required().min(3).max(30),
   homeNumber: yup.number().required().min(1),
   zipCode: yup.string().required().min(5).max(6),
@@ -21,7 +24,7 @@ const basicSchema = yup.object().shape({
 });
 
 const inPostSchema = yup.object().shape({
-  email: yup.string().email().required(),
+  email: yup.string().email().required().matches(emailRegex, "Invalid email"),
   phoneNumber: yup
     .string()
     .required()
@@ -36,6 +39,8 @@ const Order = () => {
   const [inPostModal, setInPostModal] = useState(false);
   const [method, setMethod] = useState("inpost");
   const { user } = useUserContext();
+  const [redirect, setRedirect] = useState(false);
+  const [error, setError] = useState(null);
 
   const showModal = () => {
     setModal(!modal);
@@ -45,11 +50,6 @@ const Order = () => {
     if (cart.length <= 0) {
       throw Error("Impossible action!");
     }
-
-    console.log("siemano");
-    console.log(cart);
-    console.log(values);
-
     let product = {};
 
     if (user) {
@@ -75,10 +75,11 @@ const Order = () => {
     });
 
     if (!patchRes.ok) {
-      throw Error("couldnt add an order");
+      setError("Couldn't add an order");
     }
 
     if (patchRes.ok) {
+      setError(null);
       const res = await fetch("/api/orders", {
         method: "POST",
         body: JSON.stringify(product),
@@ -90,14 +91,19 @@ const Order = () => {
       const json = await res.json();
 
       if (!res.ok) {
-        throw Error("couldnt add new order request");
+        setError("Couldn't add an order");
       }
 
       if (res.ok) {
-        console.log("new order added", json);
         actions.resetForm();
         clearCart();
         showModal();
+        setError(null);
+        setRedirect(true);
+
+        if (redirect) {
+          return redirect("/");
+        }
       }
     }
   };
@@ -158,7 +164,7 @@ const Order = () => {
   };
 
   return (
-    <div className="mt-[150px] min-h-screen flex flex-col items-center">
+    <div className="mt-[150px] min-h-screen flex flex-col items-center animate fadeDown">
       <h1 className="text-[48px] font-bold text-orange-500  text-center">
         Order
       </h1>
@@ -346,6 +352,9 @@ const Order = () => {
               </button>
             </div>
           )}
+          {error && (
+            <p className="text-center text-[20px] mt-4 py-2 text-red-600 font-semibold"></p>
+          )}
         </form>
       )}
 
@@ -420,6 +429,11 @@ const Order = () => {
                 Confirm order
               </button>
             </div>
+          )}
+          {error && (
+            <p className="text-center text-[20px] mt-4 py-2 text-red-600 font-semibold">
+              {error}
+            </p>
           )}
         </form>
       )}

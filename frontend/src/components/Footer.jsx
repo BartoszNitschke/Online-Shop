@@ -32,20 +32,14 @@ const Footer = () => {
             <h1 className="text-[24px] font-semibold text-gray-900 py-5">
               Your Panel
             </h1>
-            <Link to="/products">
+            <Link to="/account">
               <p className="text-[18px] font-semibold text-gray-900 py-1">
                 Account
               </p>
             </Link>
-            <Link to="/men">
+            <Link to="/cart">
               <p className="text-[18px] font-semibold text-gray-900 py-1">
                 Cart
-              </p>
-            </Link>
-
-            <Link to="/women">
-              <p className="text-[18px] font-semibold text-gray-900 py-1">
-                Log Out
               </p>
             </Link>
           </div>

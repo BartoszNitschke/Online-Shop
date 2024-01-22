@@ -19,8 +19,8 @@ const Product = ({ product }) => {
           {product.name}
         </h1>
         <div className="flex justify-evenly text-[18px] font-semibold py-1">
-          <h1>{product.priceNoDelivery} PLN</h1>
-          <h1>{product.priceDelivery} PLN with Delivery</h1>
+          <h1 className=" after:content-['PLN']">{product.priceNoDelivery}</h1>
+          <h1 className="delivery">{product.priceDelivery} </h1>
         </div>
         <h5>{product.description}</h5>
         <h4 className="font-semibold text-[18px] ">

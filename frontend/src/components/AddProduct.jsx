@@ -64,7 +64,6 @@ const AddProduct = () => {
       setPants(false);
       setShoes(false);
       setSocks(false);
-      console.log("new product added", json);
     }
   };
 

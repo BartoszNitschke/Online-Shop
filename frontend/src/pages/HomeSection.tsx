@@ -1,12 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useLayoutEffect } from "react";
 import Product from "../components/Product";
 import { Link } from "react-router-dom";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
-const Home = () => {
-  const [products, setProducts] = useState(null);
+interface ProductType {
+  _id: string;
+  name: string;
+  description: string;
+  priceNoDelivery: number;
+  quantity: number;
+  url: string;
+}
 
-  useEffect(() => {
+const HomeSection: React.FC = () => {
+  const [products, setProducts] = useState<ProductType[] | null>(null);
+
+  useLayoutEffect(() => {
     const fetchProducts = async () => {
       const res = await fetch("/api/products/rating");
       const json = await res.json();
@@ -17,7 +26,7 @@ const Home = () => {
     };
 
     fetchProducts();
-  }, [products]);
+  }, []);
 
   return (
     <div>
@@ -31,9 +40,11 @@ const Home = () => {
           <h1 className="text-orange-500 text-[64px] font-bold ">
             ADD SOME STYLE NOW
           </h1>
-          <button className="bg-orange-500 px-12 py-4 text-white  rounded-lg text-[18px] font-semibold">
-            SHOP NOW
-          </button>
+          <Link to="/products">
+            <button className="bg-orange-500 px-12 py-4 text-white  rounded-lg text-[18px] font-semibold">
+              SHOP NOW
+            </button>
+          </Link>
         </div>
         <div className="flex flex-col justify-center items-center">
           <h1 className="font-bold text-[48px] py-8 text-orange-500">
@@ -56,4 +67,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomeSection;

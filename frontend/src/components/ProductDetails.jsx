@@ -16,25 +16,26 @@ const ProductDetails = () => {
   const [rating, setRating] = useState(0);
   const [usersRating, setUsersRating] = useState(null);
   const [error, setError] = useState(null);
+  const [deleteReviewModal, setDeleteReviewModal] = useState(false);
+  const [deleteRatingModal, setDeleteRatingModal] = useState(false);
   const { addProducts } = useContext(CartContext);
 
   const url = window.location.pathname;
   const id = url.slice(url.indexOf("/product/") + 9);
 
-  //blad gdy nie ma productu o tym id
+  const fetchProduct = async () => {
+    const res = await fetch("/api/products/" + id);
+    const json = await res.json();
+
+    if (res.ok) {
+      setProduct(json);
+    }
+  };
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      const res = await fetch("/api/products/" + id);
-      const json = await res.json();
-
-      if (res.ok) {
-        setProduct(json);
-      }
-    };
-
     fetchProduct();
-  }, [product, id]);
+    // eslint-disable-next-line
+  }, []);
 
   const handleAddToCart = () => {
     const inputValue = parseInt(quantityRef.current.value, 10);
@@ -48,30 +49,40 @@ const ProductDetails = () => {
   };
 
   useEffect(() => {
-    const fetchReviews = async () => {
-      const res = await fetch("/api/reviews");
-      const json = await res.json();
+    if (product && quantity > product.quantity) {
+      setError("Product not available");
+    }
 
-      if (res.ok) {
-        setReviews(json);
-      }
-    };
+    if (product && quantity <= product.quantity) {
+      setError(null);
+    }
+  }, [product, quantity]);
 
-    fetchReviews();
-  }, [reviews]);
+  const fetchReviews = async () => {
+    const res = await fetch("/api/reviews");
+    const json = await res.json();
+
+    if (res.ok) {
+      setReviews(json);
+    }
+  };
 
   useEffect(() => {
-    const fetchRatings = async () => {
-      const res = await fetch("/api/rating");
-      const json = await res.json();
+    fetchReviews();
+  }, []);
 
-      if (res.ok) {
-        setUsersRating(json);
-      }
-    };
+  const fetchRatings = async () => {
+    const res = await fetch("/api/rating");
+    const json = await res.json();
 
+    if (res.ok) {
+      setUsersRating(json);
+    }
+  };
+
+  useEffect(() => {
     fetchRatings();
-  }, [usersRating]);
+  }, []);
 
   const handleReview = async (e) => {
     e.preventDefault();
@@ -99,14 +110,13 @@ const ProductDetails = () => {
       if (res.ok) {
         setError(null);
         setReview("");
-        console.log("new review added", json);
+        fetchReviews();
       }
     }
   };
 
   const onStarClick = async (nextValue, prevValue, name) => {
     setRating(nextValue);
-    console.log(`Rated ${nextValue} stars`);
 
     const userRating = {
       rating: nextValue,
@@ -134,8 +144,7 @@ const ProductDetails = () => {
       }
       if (res.ok) {
         setError(null);
-
-        console.log("new rating added", json);
+        fetchRatings();
       }
     }
 
@@ -156,7 +165,7 @@ const ProductDetails = () => {
 
       if (res.ok) {
         setError(null);
-        console.log("new rating added in product collection", json);
+        fetchProduct();
       }
     }
   };
@@ -170,11 +179,12 @@ const ProductDetails = () => {
       const json = await res.json();
 
       if (!res.ok) {
-        console.log(json.error);
+        console.error(json.error);
       }
 
       if (res.ok) {
-        console.log("review has been deleted");
+        setDeleteReviewModal(false);
+        fetchReviews();
       }
     }
   };
@@ -188,11 +198,12 @@ const ProductDetails = () => {
       const json = await res.json();
 
       if (!res.ok) {
-        console.log(json.error);
+        console.error(json.error);
       }
 
       if (res.ok) {
-        console.log("rating has been deleted");
+        setDeleteRatingModal(false);
+        fetchRatings();
       }
     }
 
@@ -217,7 +228,7 @@ const ProductDetails = () => {
 
       if (res.ok) {
         setError(null);
-        console.log("rating deleted in product collection", json);
+        fetchProduct();
       }
     }
   };
@@ -239,28 +250,26 @@ const ProductDetails = () => {
           </p>
         )}
         {product && (
-          <div className="flex justify-evenly items-center w-[70%]">
+          <div className="flex justify-evenly  w-[70%]">
             <img
               src={product.url}
               alt={product.name}
               style={{ width: "450px" }}
               className="rounded-xl shadow-black shadow-xl"
             />
-            <div className="max-w-[500px]">
+            <div className="max-w-[500px] mt-[200px]">
               <div className="flex  text-[24px] font-semibold text-center justify-evenly py-2">
-                <p>
+                <p className="after:content-['PLN']">
                   <span className="text-orange-500 font-bold">
                     {product.priceNoDelivery}
                   </span>{" "}
-                  PLN
                 </p>
-                <p>
+                <p className="delivery">
                   {" "}
                   From{" "}
                   <span className="text-orange-500 font-bold">
                     {product.priceDelivery}
                   </span>{" "}
-                  PLN with Delivery
                 </p>
               </div>
 
@@ -284,6 +293,7 @@ const ProductDetails = () => {
                   stock
                 </p>
               </div>
+
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -300,17 +310,26 @@ const ProductDetails = () => {
                     setQuantity(e.target.value);
                   }}
                   min={1}
-                  defaultValue={1}
                 />
                 <button className="text-[24px] w-full py-2 bg-orange-500 rounded-3xl mx-1 shadow-md shadow-gray-700">
                   Add to cart
                 </button>
               </form>
+              {error && (
+                <p className="text-center text-[20px] mt-4 py-2 text-red-600 font-semibold">
+                  {error}
+                </p>
+              )}
             </div>
           </div>
         )}
+        {product && product._id && !user && (
+          <p className="mt-8 py-8 text-[36px] text-orange-500 font-semibold">
+            Log In to share your review
+          </p>
+        )}
 
-        {product && product._id && (
+        {product && product._id && user && (
           <div className="flex items-center pt-8 w-[70%] justify-evenly">
             <form
               className="flex flex-col items-center"
@@ -360,11 +379,32 @@ const ProductDetails = () => {
           reviews.map((rev) => {
             if (rev.prodId === product._id) {
               return (
-                <div className="py-3 flex items-center">
+                <div className="py-3 flex items-center" key={rev.prodId}>
                   {user && user.admin && (
-                    <button onClick={() => handleDelete(rev._id)}>
+                    <button onClick={() => setDeleteReviewModal(true)}>
                       <MdDelete className="text-[32px] mr-8 text-gray-800 hover:text-orange-400" />
                     </button>
+                  )}
+                  {deleteReviewModal && (
+                    <div className="fixed top-0 left-0 w-full h-screen z-20 bg-black-rgba flex  flex-col justify-center items-center">
+                      <p className="text-[48px] font-semibold text-white">
+                        Sure?
+                      </p>
+                      <div className="flex">
+                        <button
+                          className="text-[32px] text-green-600 font-semibold px-2 hover:text-gray-400 "
+                          onClick={() => handleDelete(rev._id)}
+                        >
+                          Yes
+                        </button>
+                        <button
+                          className="text-[32px] text-red-600 font-semibold px-2 hover:text-gray-400"
+                          onClick={() => setDeleteReviewModal(false)}
+                        >
+                          No
+                        </button>
+                      </div>
+                    </div>
                   )}
 
                   <div>
@@ -382,9 +422,9 @@ const ProductDetails = () => {
                   </div>
                 </div>
               );
-            } else return <></>;
+            } else return <div key={rev._id}></div>;
           })}
-        {usersRating && user && user.admin && (
+        {usersRating && (
           <div>
             <h1 className="text-[20px] text-orange-500 font-semibold py-5">
               User ratings
@@ -392,14 +432,36 @@ const ProductDetails = () => {
             {usersRating.map((rat) => {
               if (rat.prodId === product._id) {
                 return (
-                  <div className="flex items-center">
-                    <button
-                      onClick={() => {
-                        handleRatingDelete(rat._id, rat.value);
-                      }}
-                    >
-                      <MdDelete className="text-[32px] mr-8 text-gray-800 hover:text-orange-400" />
-                    </button>
+                  <div className="flex items-center" key={rat._id}>
+                    {user && user.admin && (
+                      <button onClick={() => setDeleteRatingModal(true)}>
+                        <MdDelete className="text-[32px] mr-8 text-gray-800 hover:text-orange-400" />
+                      </button>
+                    )}
+                    {deleteRatingModal && (
+                      <div className="fixed top-0 left-0 w-full h-screen z-20 bg-black-rgba flex flex-col justify-center items-center">
+                        <p className="text-[48px] font-semibold text-white">
+                          Sure?
+                        </p>
+                        <div className="flex ">
+                          <button
+                            className="text-[32px] font-semibold text-green-600 px-2 hover:text-gray-400"
+                            onClick={() => {
+                              handleRatingDelete(rat._id, rat.value);
+                            }}
+                          >
+                            Yes
+                          </button>
+                          <button
+                            className="text-[32px] font-semibold text-red-600 px-2 hover:text-gray-400"
+                            onClick={() => setDeleteRatingModal(false)}
+                          >
+                            No
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
                     <div className="flex flex-col justify-center py-2">
                       <div className="flex items-center">
                         {Array.from({ length: rat.value }).map((_, index) => (
@@ -413,7 +475,7 @@ const ProductDetails = () => {
                     </div>
                   </div>
                 );
-              }
+              } else return <div key={rat._id}></div>;
             })}
           </div>
         )}

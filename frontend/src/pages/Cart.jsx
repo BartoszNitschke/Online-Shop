@@ -14,24 +14,32 @@ const Cart = () => {
     removeFromCart,
   } = useContext(CartContext);
 
+  const [productUnavailable, setProductUnavailable] = useState(false);
+  useEffect(() => {
+    const productNotAvailable = cart.find(
+      (product) => product.quantity > product.quantityInStore
+    );
+    setProductUnavailable(!!productNotAvailable);
+  }, [cart]);
+
   if (cart.length < 1) {
     return (
       <div className="h-screen w-full justify-center items-center flex">
-        <h1 className="text-[48px] font-bold text-orange-500">
-          Add items to your cart
+        <h1 className="text-[48px] font-bold text-orange-500 after:content-['cart'] animate fadeDown">
+          Add items to your{" "}
         </h1>
       </div>
     );
   }
 
   return (
-    <div className="mt-[150px] flex flex-col h-screen w-[90%] mx-auto">
+    <div className="mt-[150px] flex flex-col h-screen w-[90%] mx-auto animate fadeDown">
       <h1 className="text-[48px] font-bold text-orange-500 pb-8 text-center">
         Cart
       </h1>
       {cart.map((product) => {
         return (
-          <div className="flex  py-2 w-[80%]">
+          <div className="flex  py-2 w-[80%]" key={product._id}>
             <Link to={"/product/" + product._id}>
               <img
                 src={product.url}
@@ -70,6 +78,11 @@ const Cart = () => {
               <p className="text-[18px] font-semibold">
                 Total : {product.quantity * product.priceNoDelivery}
               </p>
+              {product.quantity > product.quantityInStore && (
+                <p className="text-center text-[20px] mt-4 py-2 text-red-600 font-semibold">
+                  Product not available
+                </p>
+              )}
             </div>
           </div>
         );
@@ -89,7 +102,14 @@ const Cart = () => {
         </p>
 
         <Link to="/order">
-          <button className="text-[22px] font-semibold bg-orange-500 rounded-2xl text-white px-16 py-2 mt-6 hover:bg-orange-400 hover:text-gray-700">
+          <button
+            className={
+              !productUnavailable
+                ? "text-[22px] font-semibold bg-orange-500 rounded-2xl text-white px-16 py-2 mt-6 hover:bg-orange-400 hover:text-gray-700"
+                : "text-[22px] font-semibold bg-gray-400 rounded-2xl text-black px-16 py-2 mt-6"
+            }
+            disabled={productUnavailable}
+          >
             Complete order
           </button>
         </Link>
