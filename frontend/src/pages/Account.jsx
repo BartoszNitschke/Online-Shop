@@ -5,10 +5,8 @@ import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 
 const Account = () => {
   const [orders, setOrders] = useState();
-  const [changePassword, setChangePassword] = useState(false);
   const [firstPassword, setFirstPassword] = useState("");
   const [secondPassword, setSecondPassword] = useState("");
-  const [deleteAccount, setDeleteAccount] = useState(false);
   const [accountPassword, setAccountPassword] = useState("");
   const [option, setOption] = useState("password");
   const [error, setError] = useState(null);
@@ -55,7 +53,7 @@ const Account = () => {
         setError(null);
         setFirstPassword("");
         setSecondPassword("");
-        setChangePassword(false);
+
         if (json) {
           console.log(json);
         }
@@ -88,16 +86,7 @@ const Account = () => {
     if (res.ok) {
       setError(null);
       setAccountPassword("");
-      setDeleteAccount(false);
       logout();
-    }
-  };
-
-  const handleOption = () => {
-    if (option === "password") {
-      setOption("account");
-    } else {
-      setOption("password");
     }
   };
 
@@ -200,14 +189,16 @@ const Account = () => {
             <h1 className="text-[30px] text-orange-500 font-semibold">
               Your last orders
             </h1>
-            {/* roboczo slice 05 */}
             {orders.slice(0, 5).map((order) => {
               if (order.userId === user._id) {
                 return (
-                  <div className="flex flex-col items-center py-4 border-b-2 border-orange-600">
+                  <div
+                    className="flex flex-col items-center py-4 border-b-2 border-orange-600"
+                    key={order._id}
+                  >
                     {order.products.map((product) => {
                       return (
-                        <div className="flex items-center">
+                        <div className="flex items-center" key={product._id}>
                           <p className="text-[18px] font-semibold px-3">
                             {product.name}
                           </p>
@@ -230,7 +221,7 @@ const Account = () => {
                     </p>
                   </div>
                 );
-              }
+              } else return <div key={order._id}></div>;
             })}
           </div>
         )}

@@ -2,7 +2,6 @@ import React, { useContext, useState } from "react";
 import { CartContext } from "../context/CartContext";
 import { useUserContext } from "../hooks/useUserContext";
 import { useFormik } from "formik";
-import { redirect } from "react-router-dom";
 
 import * as yup from "yup";
 

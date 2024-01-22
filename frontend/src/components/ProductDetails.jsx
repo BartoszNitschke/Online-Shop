@@ -5,7 +5,6 @@ import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { MdDelete, MdStarRate } from "react-icons/md";
 import { CartContext } from "../context/CartContext";
-import { debounce } from "lodash";
 
 const ProductDetails = () => {
   const { user } = useUserContext();
@@ -37,6 +36,7 @@ const ProductDetails = () => {
 
   useEffect(() => {
     fetchProduct();
+    // eslint-disable-next-line
   }, []);
 
   const handleAddToCart = () => {
@@ -58,7 +58,7 @@ const ProductDetails = () => {
     if (product && quantity <= product.quantity) {
       setError(null);
     }
-  }, [quantity]);
+  }, [product, quantity]);
 
   const fetchReviews = async () => {
     const res = await fetch("/api/reviews");
@@ -320,7 +320,6 @@ const ProductDetails = () => {
                     setQuantity(e.target.value);
                   }}
                   min={1}
-                  defaultValue={1}
                 />
                 <button className="text-[24px] w-full py-2 bg-orange-500 rounded-3xl mx-1 shadow-md shadow-gray-700">
                   Add to cart
@@ -390,7 +389,7 @@ const ProductDetails = () => {
           reviews.map((rev) => {
             if (rev.prodId === product._id) {
               return (
-                <div className="py-3 flex items-center">
+                <div className="py-3 flex items-center" key={rev.prodId}>
                   {user && user.admin && (
                     <button onClick={() => setDeleteReviewModal(true)}>
                       <MdDelete className="text-[32px] mr-8 text-gray-800 hover:text-orange-400" />
@@ -433,7 +432,7 @@ const ProductDetails = () => {
                   </div>
                 </div>
               );
-            } else return <></>;
+            } else return <div key={rev._id}></div>;
           })}
         {usersRating && (
           <div>
@@ -443,7 +442,7 @@ const ProductDetails = () => {
             {usersRating.map((rat) => {
               if (rat.prodId === product._id) {
                 return (
-                  <div className="flex items-center">
+                  <div className="flex items-center" key={rat._id}>
                     {user && user.admin && (
                       <button onClick={() => setDeleteRatingModal(true)}>
                         <MdDelete className="text-[32px] mr-8 text-gray-800 hover:text-orange-400" />
@@ -486,7 +485,7 @@ const ProductDetails = () => {
                     </div>
                   </div>
                 );
-              }
+              } else return <div key={rat._id}></div>;
             })}
           </div>
         )}

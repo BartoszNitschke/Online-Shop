@@ -39,7 +39,7 @@ const Cart = () => {
       </h1>
       {cart.map((product) => {
         return (
-          <div className="flex  py-2 w-[80%]">
+          <div className="flex  py-2 w-[80%]" key={product._id}>
             <Link to={"/product/" + product._id}>
               <img
                 src={product.url}

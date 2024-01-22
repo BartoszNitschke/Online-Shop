@@ -2,13 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useLogout } from "../hooks/useLogout";
 import { useUserContext } from "../hooks/useUserContext";
-import {
-  CiUser,
-  CiSearch,
-  CiShoppingCart,
-  CiDesktop,
-  CiLogout,
-} from "react-icons/ci";
+import { CiUser, CiShoppingCart, CiDesktop, CiLogout } from "react-icons/ci";
 
 const Navbar = () => {
   const { logout } = useLogout();

@@ -294,7 +294,7 @@ const OurProducts = () => {
                   filter === null
                 ) {
                   return <Product key={product._id} product={product} />;
-                }
+                } else return <div key={product._id}></div>;
               })}
           </div>
 
