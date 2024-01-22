@@ -12,7 +12,6 @@ export const CartContextProvider = ({ children }) => {
 
   const [totalPrice, setTotalPrice] = useState(0);
 
-  //przed ustawieniem do ls czy produkt istnieje
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);

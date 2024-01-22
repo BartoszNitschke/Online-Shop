@@ -50,11 +50,6 @@ const Order = () => {
     if (cart.length <= 0) {
       throw Error("Impossible action!");
     }
-
-    console.log("siemano");
-    console.log(cart);
-    console.log(values);
-
     let product = {};
 
     if (user) {
@@ -100,7 +95,6 @@ const Order = () => {
       }
 
       if (res.ok) {
-        console.log("new order added", json);
         actions.resetForm();
         clearCart();
         showModal();

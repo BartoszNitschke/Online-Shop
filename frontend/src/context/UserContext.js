@@ -33,16 +33,10 @@ export const UserContextProvider = ({ children }) => {
       }
     };
 
-    // zmiana na usera db
-    // 1. requireUser pobiera i weryfikuje token, zwraca req.user._id
-    // 2.ten useEffect wywoluje funkcje w userController getUserDetails() i payloduje usera
-
     if (user) {
       fetchUserData();
     }
   }, []);
-
-  console.log("UserContext state: ", state);
 
   return (
     <UserContext.Provider value={{ ...state, dispatch }}>

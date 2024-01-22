@@ -8,8 +8,6 @@ const Navbar = () => {
   const { logout } = useLogout();
   const { user } = useUserContext();
 
-  console.log(user);
-
   const handleLogout = () => {
     logout();
   };

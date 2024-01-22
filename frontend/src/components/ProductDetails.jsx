@@ -23,8 +23,6 @@ const ProductDetails = () => {
   const url = window.location.pathname;
   const id = url.slice(url.indexOf("/product/") + 9);
 
-  //blad gdy nie ma productu o tym id
-
   const fetchProduct = async () => {
     const res = await fetch("/api/products/" + id);
     const json = await res.json();
@@ -113,14 +111,12 @@ const ProductDetails = () => {
         setError(null);
         setReview("");
         fetchReviews();
-        console.log("new review added", json);
       }
     }
   };
 
   const onStarClick = async (nextValue, prevValue, name) => {
     setRating(nextValue);
-    console.log(`Rated ${nextValue} stars`);
 
     const userRating = {
       rating: nextValue,
@@ -149,8 +145,6 @@ const ProductDetails = () => {
       if (res.ok) {
         setError(null);
         fetchRatings();
-
-        console.log("new rating added", json);
       }
     }
 
@@ -172,7 +166,6 @@ const ProductDetails = () => {
       if (res.ok) {
         setError(null);
         fetchProduct();
-        console.log("new rating added in product collection", json);
       }
     }
   };
@@ -186,11 +179,10 @@ const ProductDetails = () => {
       const json = await res.json();
 
       if (!res.ok) {
-        console.log(json.error);
+        console.error(json.error);
       }
 
       if (res.ok) {
-        console.log("review has been deleted");
         setDeleteReviewModal(false);
         fetchReviews();
       }
@@ -206,11 +198,10 @@ const ProductDetails = () => {
       const json = await res.json();
 
       if (!res.ok) {
-        console.log(json.error);
+        console.error(json.error);
       }
 
       if (res.ok) {
-        console.log("rating has been deleted");
         setDeleteRatingModal(false);
         fetchRatings();
       }
@@ -238,7 +229,6 @@ const ProductDetails = () => {
       if (res.ok) {
         setError(null);
         fetchProduct();
-        console.log("rating deleted in product collection", json);
       }
     }
   };

@@ -29,9 +29,7 @@ const Account = () => {
   const handlePasswordChange = async (e) => {
     e.preventDefault();
     if (firstPassword === secondPassword) {
-      //patch ze zmiana hasla
       const newPassword = firstPassword;
-      console.log(newPassword); //newPassword nie jest undefined
       const user = JSON.parse(localStorage.getItem("user"));
 
       const res = await fetch("/api/user/changePassword", {
@@ -49,14 +47,9 @@ const Account = () => {
         setError(json.error);
       }
       if (res.ok) {
-        console.log("Your password has been changed!");
         setError(null);
         setFirstPassword("");
         setSecondPassword("");
-
-        if (json) {
-          console.log(json);
-        }
       }
     } else {
       setError("Passwords must be the same!");

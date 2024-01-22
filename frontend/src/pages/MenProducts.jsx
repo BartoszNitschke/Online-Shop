@@ -47,7 +47,6 @@ const MenProducts = () => {
         second = new Date(b[filteredProp]);
       }
 
-      console.log("siemka", a[filteredProp]);
       const comparison = first - second;
       return newSortDirection ? comparison : -comparison;
     });

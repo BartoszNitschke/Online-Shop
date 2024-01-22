@@ -11,7 +11,6 @@ export const Signup = () => {
     e.preventDefault();
 
     await signup(email, name, password);
-    console.log(email, name, password);
   };
 
   return (
