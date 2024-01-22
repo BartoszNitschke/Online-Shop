@@ -1,5 +1,6 @@
 const Review = require("../models/Review");
 const mongoose = require("mongoose");
+const Product = require("../models/Product");
 
 const getReviews = async (req, res) => {
   const reviews = await Review.find({});
@@ -7,26 +8,19 @@ const getReviews = async (req, res) => {
   res.status(200).json(reviews);
 };
 
-const getReview = async (req, res) => {
-  const { id } = req.params;
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ error: "No product with this id" });
-  }
-
-  const product = await Product.findById(id);
-
-  if (!product) {
-    return res.status(404).json({ error: "No product with this id" });
-  }
-
-  res.status(200).json(product);
-};
-
 const addReview = async (req, res) => {
   const { review, author, prodId } = req.body;
 
   try {
+    const productExists = await Product.exists({ _id: prodId });
+    if (!productExists) {
+      throw new Error("Product with this prodId not found");
+    }
+
+    if (!author.trim() || !review.trim()) {
+      throw new Error("Author, review cannot be empty");
+    }
+
     const rev = await Review.create({
       review,
       author,
@@ -54,31 +48,8 @@ const deleteReview = async (req, res) => {
   res.status(200).json(review);
 };
 
-const updateReview = async (req, res) => {
-  const { id } = req.params;
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ error: "No product with this id" });
-  }
-
-  const product = await Product.findOneAndUpdate(
-    { _id: id },
-    {
-      ...req.body,
-    }
-  );
-
-  if (!product) {
-    return res.status(404).json({ error: "No product with this id" });
-  }
-
-  res.status(200).json(product);
-};
-
 module.exports = {
   addReview,
-  getReview,
   getReviews,
   deleteReview,
-  updateReview,
 };

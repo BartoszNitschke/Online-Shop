@@ -23,7 +23,6 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-//may be be redirected to userController
 userSchema.statics.signup = async function (email, name, password) {
   if (!email || !name || !password) {
     throw Error("You must fill all the fields");
@@ -57,13 +56,10 @@ userSchema.statics.login = async function (email, password) {
   }
 
   const user = await this.findOne({ email });
-  console.log(user);
 
   if (!user) {
     throw Error("Incorrect email");
   }
-
-  //ogarnac to
 
   const match = await bcrypt.compare(password, user.password);
 
