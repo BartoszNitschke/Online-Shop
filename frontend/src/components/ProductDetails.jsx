@@ -17,6 +17,8 @@ const ProductDetails = () => {
   const [rating, setRating] = useState(0);
   const [usersRating, setUsersRating] = useState(null);
   const [error, setError] = useState(null);
+  const [deleteReviewModal, setDeleteReviewModal] = useState(false);
+  const [deleteRatingModal, setDeleteRatingModal] = useState(false);
   const { addProducts } = useContext(CartContext);
 
   const url = window.location.pathname;
@@ -24,22 +26,18 @@ const ProductDetails = () => {
 
   //blad gdy nie ma productu o tym id
 
-  const fetchProduct = debounce(() => {
-    const fetchProduct = async () => {
-      const res = await fetch("/api/products/" + id);
-      const json = await res.json();
+  const fetchProduct = async () => {
+    const res = await fetch("/api/products/" + id);
+    const json = await res.json();
 
-      if (res.ok) {
-        setProduct(json);
-      }
-    };
-
-    fetchProduct();
-  }, 10000);
+    if (res.ok) {
+      setProduct(json);
+    }
+  };
 
   useEffect(() => {
     fetchProduct();
-  }, [product]);
+  }, []);
 
   const handleAddToCart = () => {
     const inputValue = parseInt(quantityRef.current.value, 10);
@@ -62,33 +60,29 @@ const ProductDetails = () => {
     }
   }, [quantity]);
 
-  const fetchReviews = debounce(() => {
-    const fetchReviews = async () => {
-      const res = await fetch("/api/reviews");
-      const json = await res.json();
+  const fetchReviews = async () => {
+    const res = await fetch("/api/reviews");
+    const json = await res.json();
 
-      if (res.ok) {
-        setReviews(json);
-      }
-    };
-
-    fetchReviews();
-  }, 10000);
+    if (res.ok) {
+      setReviews(json);
+    }
+  };
 
   useEffect(() => {
     fetchReviews();
-  }, [reviews]);
+  }, []);
+
+  const fetchRatings = async () => {
+    const res = await fetch("/api/rating");
+    const json = await res.json();
+
+    if (res.ok) {
+      setUsersRating(json);
+    }
+  };
 
   useEffect(() => {
-    const fetchRatings = async () => {
-      const res = await fetch("/api/rating");
-      const json = await res.json();
-
-      if (res.ok) {
-        setUsersRating(json);
-      }
-    };
-
     fetchRatings();
   }, []);
 
@@ -118,6 +112,7 @@ const ProductDetails = () => {
       if (res.ok) {
         setError(null);
         setReview("");
+        fetchReviews();
         console.log("new review added", json);
       }
     }
@@ -153,6 +148,7 @@ const ProductDetails = () => {
       }
       if (res.ok) {
         setError(null);
+        fetchRatings();
 
         console.log("new rating added", json);
       }
@@ -175,6 +171,7 @@ const ProductDetails = () => {
 
       if (res.ok) {
         setError(null);
+        fetchProduct();
         console.log("new rating added in product collection", json);
       }
     }
@@ -194,6 +191,8 @@ const ProductDetails = () => {
 
       if (res.ok) {
         console.log("review has been deleted");
+        setDeleteReviewModal(false);
+        fetchReviews();
       }
     }
   };
@@ -212,6 +211,8 @@ const ProductDetails = () => {
 
       if (res.ok) {
         console.log("rating has been deleted");
+        setDeleteRatingModal(false);
+        fetchRatings();
       }
     }
 
@@ -236,6 +237,7 @@ const ProductDetails = () => {
 
       if (res.ok) {
         setError(null);
+        fetchProduct();
         console.log("rating deleted in product collection", json);
       }
     }
@@ -390,9 +392,30 @@ const ProductDetails = () => {
               return (
                 <div className="py-3 flex items-center">
                   {user && user.admin && (
-                    <button onClick={() => handleDelete(rev._id)}>
+                    <button onClick={() => setDeleteReviewModal(true)}>
                       <MdDelete className="text-[32px] mr-8 text-gray-800 hover:text-orange-400" />
                     </button>
+                  )}
+                  {deleteReviewModal && (
+                    <div className="fixed top-0 left-0 w-full h-screen z-20 bg-black-rgba flex  flex-col justify-center items-center">
+                      <p className="text-[48px] font-semibold text-white">
+                        Sure?
+                      </p>
+                      <div className="flex">
+                        <button
+                          className="text-[32px] text-green-600 font-semibold px-2 hover:text-gray-400 "
+                          onClick={() => handleDelete(rev._id)}
+                        >
+                          Yes
+                        </button>
+                        <button
+                          className="text-[32px] text-red-600 font-semibold px-2 hover:text-gray-400"
+                          onClick={() => setDeleteReviewModal(false)}
+                        >
+                          No
+                        </button>
+                      </div>
+                    </div>
                   )}
 
                   <div>
@@ -412,7 +435,7 @@ const ProductDetails = () => {
               );
             } else return <></>;
           })}
-        {usersRating && user && user.admin && (
+        {usersRating && (
           <div>
             <h1 className="text-[20px] text-orange-500 font-semibold py-5">
               User ratings
@@ -421,13 +444,35 @@ const ProductDetails = () => {
               if (rat.prodId === product._id) {
                 return (
                   <div className="flex items-center">
-                    <button
-                      onClick={() => {
-                        handleRatingDelete(rat._id, rat.value);
-                      }}
-                    >
-                      <MdDelete className="text-[32px] mr-8 text-gray-800 hover:text-orange-400" />
-                    </button>
+                    {user && user.admin && (
+                      <button onClick={() => setDeleteRatingModal(true)}>
+                        <MdDelete className="text-[32px] mr-8 text-gray-800 hover:text-orange-400" />
+                      </button>
+                    )}
+                    {deleteRatingModal && (
+                      <div className="fixed top-0 left-0 w-full h-screen z-20 bg-black-rgba flex flex-col justify-center items-center">
+                        <p className="text-[48px] font-semibold text-white">
+                          Sure?
+                        </p>
+                        <div className="flex ">
+                          <button
+                            className="text-[32px] font-semibold text-green-600 px-2 hover:text-gray-400"
+                            onClick={() => {
+                              handleRatingDelete(rat._id, rat.value);
+                            }}
+                          >
+                            Yes
+                          </button>
+                          <button
+                            className="text-[32px] font-semibold text-red-600 px-2 hover:text-gray-400"
+                            onClick={() => setDeleteRatingModal(false)}
+                          >
+                            No
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
                     <div className="flex flex-col justify-center py-2">
                       <div className="flex items-center">
                         {Array.from({ length: rat.value }).map((_, index) => (
