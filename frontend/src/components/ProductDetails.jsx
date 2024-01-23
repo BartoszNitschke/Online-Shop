@@ -40,7 +40,7 @@ const ProductDetails = () => {
   const handleAddToCart = () => {
     const inputValue = parseInt(quantityRef.current.value, 10);
 
-    if (isNaN(inputValue) || inputValue < 1) {
+    if (isNaN(inputValue) || inputValue < 1 || inputValue % 1 !== 0) {
       console.error("invalid quantity value");
       return;
     }
