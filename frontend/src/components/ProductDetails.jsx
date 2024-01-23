@@ -376,10 +376,10 @@ const ProductDetails = () => {
       <div className="w-[60%] flex flex-col mx-auto py-12">
         {reviews &&
           product &&
-          reviews.map((rev) => {
+          reviews.map((rev, index) => {
             if (rev.prodId === product._id) {
               return (
-                <div className="py-3 flex items-center" key={rev.prodId}>
+                <div className="py-3 flex items-center" key={index}>
                   {user && user.admin && (
                     <button onClick={() => setDeleteReviewModal(true)}>
                       <MdDelete className="text-[32px] mr-8 text-gray-800 hover:text-orange-400" />
@@ -429,10 +429,10 @@ const ProductDetails = () => {
             <h1 className="text-[20px] text-orange-500 font-semibold py-5">
               User ratings
             </h1>
-            {usersRating.map((rat) => {
+            {usersRating.map((rat, index) => {
               if (rat.prodId === product._id) {
                 return (
-                  <div className="flex items-center" key={rat._id}>
+                  <div className="flex items-center" key={index}>
                     {user && user.admin && (
                       <button onClick={() => setDeleteRatingModal(true)}>
                         <MdDelete className="text-[32px] mr-8 text-gray-800 hover:text-orange-400" />
